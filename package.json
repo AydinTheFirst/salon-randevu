@@ -1,5 +1,5 @@
 {
-  "name": "blog",
+  "name": "salon-randevu",
   "private": true,
   "scripts": {
     "build": "turbo run build",

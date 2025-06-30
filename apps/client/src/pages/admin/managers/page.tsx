@@ -1,18 +1,26 @@
-import { Button } from "@heroui/react";
+import { Button, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
 // routes/admin/managers.tsx
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 
-import type { BusinessManager, Pagination } from "~/types";
+import type { BusinessManager, Paginated } from "~/types";
 
 import DataTable from "~/components/data-table";
 import { http } from "~/lib/http";
 
-export const clientLoader = async () => {
-  const { data: managers } = await http.get<Pagination<BusinessManager>>(
+import type { Route } from "./+types/page";
+
+export const clientLoader = async ({ request }: Route.ClientLoaderArgs) => {
+  const { searchParams } = new URL(request.url);
+
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+  const offset = (page - 1) * limit;
+
+  const { data: managers } = await http.get<Paginated<BusinessManager>>(
     "/managers",
     {
-      params: { include: "user,business" }
+      params: { include: "user,business", limit, offset }
     }
   );
 
@@ -22,6 +30,7 @@ export const clientLoader = async () => {
 export default function Managers() {
   const navigate = useNavigate();
   const { managers } = useLoaderData<typeof clientLoader>();
+  const [, setSearchParams] = useSearchParams();
 
   const columns = [
     { key: "user.email", label: "Yönetici" },
@@ -54,6 +63,18 @@ export default function Managers() {
         items={items}
         onRowAction={(row) => navigate(`/admin/managers/${row}`)}
       />
+      <div className='flex justify-end'>
+        <Pagination
+          onChange={(page) =>
+            setSearchParams((prev) => {
+              prev.set("page", String(page));
+              return prev;
+            })
+          }
+          page={managers.meta.page}
+          total={managers.meta.pageCount}
+        />
+      </div>
     </div>
   );
 }

@@ -56,7 +56,7 @@ export interface BusinessManager {
   userId: string;
 }
 
-export interface Pagination<T> {
+export interface Paginated<T> {
   items: T[];
   meta: {
     page: number;

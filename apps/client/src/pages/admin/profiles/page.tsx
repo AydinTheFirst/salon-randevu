@@ -1,16 +1,24 @@
-import { Button } from "@heroui/react";
+import { Button, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
-// routes/admin/profiles.tsx
-import { useLoaderData } from "react-router";
+import { useLoaderData, useSearchParams } from "react-router";
 
-import type { Pagination, Profile } from "~/types";
+import type { Paginated, Profile } from "~/types";
 
 import DataTable from "~/components/data-table";
 import { http } from "~/lib/http";
 
-export const clientLoader = async () => {
-  const { data: profiles } = await http.get<Pagination<Profile>>("/profiles", {
-    params: { include: "user" }
+export const clientLoader = async ({ request }: { request: Request }) => {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get("page")) || 1;
+  const limit = Number(url.searchParams.get("limit")) || 10;
+  const offset = (page - 1) * limit;
+
+  const { data: profiles } = await http.get<Paginated<Profile>>("/profiles", {
+    params: {
+      include: "user",
+      limit,
+      offset
+    }
   });
 
   return { profiles };
@@ -18,6 +26,7 @@ export const clientLoader = async () => {
 
 export default function Profiles() {
   const { profiles } = useLoaderData<typeof clientLoader>();
+  const [, setSearchParams] = useSearchParams();
 
   const columns = [
     { key: "displayName", label: "İsim" },
@@ -47,10 +56,24 @@ export default function Profiles() {
           </Button>
         </div>
       </div>
+
       <DataTable
         columns={columns}
         items={items}
       />
+
+      <div className='flex justify-end'>
+        <Pagination
+          onChange={(page) => {
+            setSearchParams((prev) => {
+              prev.set("page", String(page));
+              return prev;
+            });
+          }}
+          page={profiles.meta.page}
+          total={profiles.meta.pageCount}
+        />
+      </div>
     </div>
   );
 }

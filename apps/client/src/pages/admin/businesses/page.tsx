@@ -1,22 +1,36 @@
-import { Button } from "@heroui/react";
+import { Button, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 
-import type { Business, Pagination } from "~/types";
+import type { Business, Paginated } from "~/types";
 
 import DataTable from "~/components/data-table";
 import { http } from "~/lib/http";
 
-export const clientLoader = async () => {
-  const { data: businesses } =
-    await http.get<Pagination<Business>>("/businesses");
+export const clientLoader = async ({ request }: { request: Request }) => {
+  const url = new URL(request.url);
+
+  const page = Number(url.searchParams.get("page")) || 1;
+  const limit = Number(url.searchParams.get("limit")) || 10;
+  const offset = (page - 1) * limit;
+
+  const { data: businesses } = await http.get<Paginated<Business>>(
+    "/businesses",
+    {
+      params: {
+        limit,
+        offset
+      }
+    }
+  );
 
   return { businesses };
 };
 
 export default function Businesses() {
-  const { businesses } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
+  const { businesses } = useLoaderData<typeof clientLoader>();
+  const [, setSearchParams] = useSearchParams();
 
   const columns = [
     { key: "name", label: "İşletme Adı" },
@@ -56,6 +70,18 @@ export default function Businesses() {
         items={items}
         onRowAction={(row) => navigate(`/admin/businesses/${row}`)}
       />
+      <div className='flex justify-end'>
+        <Pagination
+          onChange={(page) => {
+            setSearchParams((prev) => {
+              prev.set("page", String(page));
+              return prev;
+            });
+          }}
+          page={businesses.meta.page}
+          total={businesses.meta.pageCount}
+        />
+      </div>
     </div>
   );
 }

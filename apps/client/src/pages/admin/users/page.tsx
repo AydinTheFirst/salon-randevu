@@ -1,15 +1,20 @@
-import { Button } from "@heroui/react";
+import { Button, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 
-import type { Pagination, User } from "~/types";
+import type { Paginated, User } from "~/types";
 
 import DataTable from "~/components/data-table";
 import { http } from "~/lib/http";
 
-export const clientLoader = async () => {
-  const { data: users } = await http.get<Pagination<User>>("/users", {
-    params: { include: "profile" }
+export const clientLoader = async ({ request }: { request: Request }) => {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get("page")) || 1;
+  const limit = Number(url.searchParams.get("limit")) || 10;
+  const offset = (page - 1) * limit;
+
+  const { data: users } = await http.get<Paginated<User>>("/users", {
+    params: { include: "profile", limit, offset }
   });
 
   return { users };
@@ -18,6 +23,7 @@ export const clientLoader = async () => {
 export default function Users() {
   const { users } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const columns = [
     { key: "email", label: "Email" },
@@ -31,10 +37,13 @@ export default function Users() {
     createdAt: new Date(user.createdAt).toLocaleDateString(),
     email: user.email,
     key: user.id,
-    phone: user.phone,
-    "profile.displayName": user.profile?.displayName || "-",
+    phone: user.phone ?? "-",
+    "profile.displayName": user.profile?.displayName ?? "-",
     updatedAt: new Date(user.updatedAt).toLocaleDateString()
   }));
+
+  const currentPage = users.meta.page;
+  const totalPages = users.meta.pageCount;
 
   return (
     <div className='grid gap-5'>
@@ -52,11 +61,23 @@ export default function Users() {
           </Button>
         </div>
       </div>
+
       <DataTable
         columns={columns}
         items={items}
         onRowAction={(row) => navigate(`/admin/users/${row}`)}
       />
+
+      <div className='mt-4 flex justify-end'>
+        <Pagination
+          onChange={(page) => {
+            searchParams.set("page", page.toString());
+            setSearchParams(searchParams);
+          }}
+          page={currentPage}
+          total={totalPages}
+        />
+      </div>
     </div>
   );
 }
