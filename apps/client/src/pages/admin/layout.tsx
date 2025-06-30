@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Divider,
-  Navbar,
-  NavbarContent
-} from "@heroui/react";
+import { Divider, Navbar, NavbarContent } from "@heroui/react";
 import { Outlet } from "react-router";
 
 import SidebarGroup from "~/components/sidebar/sidebar-group";
@@ -30,35 +23,31 @@ export default function Layout() {
   const isSidebarOpen = useSidebarStore((s) => s.isSidebarOpen);
 
   return (
-    <div className='flex overflow-hidden'>
+    <div className='flex h-screen overflow-hidden'>
       <aside
+        className='bg-content2 flex h-full w-full flex-col gap-5 p-3'
         style={{
           marginLeft: isSidebarOpen ? 0 : -SIDEBAR_WIDTH,
           transition: "margin-left 0.3s ease-in-out",
           width: SIDEBAR_WIDTH
         }}
       >
-        <Card
-          className='bg-content2 h-screen w-full'
-          radius='none'
-          shadow='none'
-        >
-          <CardHeader>
-            <h1 className='text-xl font-bold'>Admin Paneli</h1>
-          </CardHeader>
-          <CardBody>
-            <SidebarGroup title='Menü'>
-              {adminMenuItems.map(({ href, label }) => (
-                <SidebarItem
-                  href={href}
-                  key={href}
-                >
-                  {label}
-                </SidebarItem>
-              ))}
-            </SidebarGroup>
-          </CardBody>
-        </Card>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-lg font-semibold'>Yönetim Paneli</h1>
+        </div>
+        <div className='flex-1'>
+          <SidebarGroup title='Menü'>
+            {adminMenuItems.map(({ href, label }) => (
+              <SidebarItem
+                href={href}
+                key={href}
+              >
+                {label}
+              </SidebarItem>
+            ))}
+          </SidebarGroup>
+        </div>
+        <div>footer</div>
       </aside>
       <Divider orientation='vertical' />
       <main className='flex-1 overflow-auto'>
