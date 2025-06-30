@@ -1,0 +1,16 @@
+services:
+  backuper-db:
+    image: postgres:latest
+    container_name: backuper_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5433:5432"
+    volumes:
+      - backuper_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  backuper_postgres_data:

@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  username String @unique @default(cuid())
+  email    String @unique
+  password String
+
+  profile Profile?
+  roles   UserRole[] @default([USER])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Token       Token[]
+  Appointment Appointment[]
+
+  @@map("users")
+}
+
+model Profile {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  displayName String
+  bio         String?
+  avatar      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
+model Token {
+  id    String @id @default(uuid())
+  token String @unique @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime @default(dbgenerated("now() + interval '1 week'"))
+
+  @@map("tokens")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Appointment {
+  id            String   @id @default(uuid())
+  userId        String
+  businessId    String
+  serviceId     String
+  appointmentAt DateTime
+  fullName      String
+  phone         String
+  address       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  business Business @relation(fields: [businessId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+
+  payment Payment?
+}
+
+model Business {
+  id          String       @id @default(uuid())
+  name        String
+  type        BusinessType
+  district    String
+  description String?
+  address     String
+  phone       String
+
+  services     Service[]
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id         String @id @default(uuid())
+  businessId String
+  name       String
+  price      Float
+
+  business     Business      @relation(fields: [businessId], references: [id])
+  appointments Appointment[]
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  appointmentId String        @unique
+  cardHolder    String
+  cardLast4     String // son 4 hane
+  status        PaymentStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+enum BusinessType {
+  BARBER
+  SALON
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
