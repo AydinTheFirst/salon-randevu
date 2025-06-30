@@ -22,26 +22,26 @@ model User {
   profile Profile?
   roles   UserRole[] @default([USER])
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Token       Token[]
-  Appointment Appointment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tokens       Token[]
+  appointments Appointment[]
 
   @@map("users")
 }
 
 model Profile {
-  id     String @id @default(uuid())
-  userId String @unique
-
+  id          String  @id @default(uuid())
   displayName String
   bio         String?
   avatar      String?
 
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
 
   @@map("profiles")
 }
@@ -60,28 +60,27 @@ model Token {
   @@map("tokens")
 }
 
-enum UserRole {
-  USER
-  ADMIN
-}
-
 model Appointment {
-  id            String   @id @default(uuid())
-  userId        String
-  businessId    String
-  serviceId     String
+  id String @id @default(uuid())
+
   appointmentAt DateTime
   fullName      String
   phone         String
   address       String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
 
-  user     User     @relation(fields: [userId], references: [id])
-  business Business @relation(fields: [businessId], references: [id])
-  service  Service  @relation(fields: [serviceId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  payment Payment?
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  services Service[]
+  payment  Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("appointments")
 }
 
 model Business {
@@ -98,28 +97,45 @@ model Business {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("businesses")
 }
 
 model Service {
-  id         String @id @default(uuid())
-  businessId String
-  name       String
-  price      Float
+  id    String @id @default(uuid())
+  name  String
+  price Float
 
-  business     Business      @relation(fields: [businessId], references: [id])
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
   appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("services")
 }
 
 model Payment {
   id            String        @id @default(uuid())
   appointmentId String        @unique
   cardHolder    String
-  cardLast4     String // son 4 hane
+  cardLast4     String
   status        PaymentStatus @default(PENDING)
 
-  createdAt DateTime @default(now())
-
   appointment Appointment @relation(fields: [appointmentId], references: [id])
+  meta        Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("payments")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 enum BusinessType {
