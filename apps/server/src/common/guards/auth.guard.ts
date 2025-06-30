@@ -8,7 +8,7 @@ export class AuthGuard implements CanActivate {
   constructor(private prisma: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request>();
 
     const token = this.extractTokenFromHeader(request);
 
@@ -17,6 +17,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const tokenDoc = await this.prisma.token.findFirst({
+      include: { user: true },
       where: { expiresAt: { gte: new Date() }, token },
     });
 
@@ -24,15 +25,11 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
 
-    const user = await this.prisma.user.findFirst({
-      where: { id: tokenDoc.userId },
-    });
-
-    if (!user) {
+    if (!tokenDoc.user) {
       throw new UnauthorizedException('Invalid token');
     }
 
-    request.user = user;
+    request.user = tokenDoc.user;
 
     return true;
   }

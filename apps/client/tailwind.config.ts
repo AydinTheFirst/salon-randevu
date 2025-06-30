@@ -4,7 +4,17 @@ import { type Config } from "tailwindcss";
 export default {
   content: ["../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"],
   darkMode: "class",
-  plugins: [heroui({})],
+  plugins: [
+    heroui({
+      layout: {
+        radius: {
+          large: "0.5rem",
+          medium: "0.375rem",
+          small: "0.25rem"
+        }
+      }
+    })
+  ],
   theme: {
     extend: {
       container: {

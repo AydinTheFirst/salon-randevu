@@ -1,8 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 
 import { AdminGuard, AuthGuard } from '~/common/guards';
 
-import { CreateUserDto, UpdateUserDto } from './users.dto';
+import { CreateUserDto, QueryUsersDto, UpdateUserDto } from './users.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -16,8 +26,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() query: QueryUsersDto) {
+    return this.usersService.findAll(query);
   }
 
   @Get(':id')

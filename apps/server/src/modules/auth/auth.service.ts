@@ -5,7 +5,7 @@ import { PrismaService } from '~/database';
 
 import { TokenService } from '../token';
 import { UsersService } from '../users';
-import { LoginDto, RegisterDto } from './auth.dto';
+import { LoginDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,7 @@ export class AuthService {
   async login(body: LoginDto) {
     const user = await this.prisma.user.findFirst({
       where: {
-        OR: [{ username: body.username }, { email: body.username }],
+        OR: [{ phone: body.username }, { email: body.username }],
       },
     });
 
@@ -37,10 +37,5 @@ export class AuthService {
       ...user,
       token: token.token,
     };
-  }
-
-  async register(body: RegisterDto) {
-    const user = await this.usersService.create(body);
-    return user;
   }
 }

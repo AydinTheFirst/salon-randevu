@@ -3,14 +3,14 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 
 import { Roles } from '~/common/decorators';
-import { User } from '~/database';
+import { User, UserRole } from '~/database';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.getAllAndOverride(Roles, [
+    const roles = this.reflector.getAllAndOverride<UserRole[]>(Roles, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -22,6 +22,10 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const user: User = request.user;
 
+    if (!user || !user.roles) {
+      throw new ForbiddenException();
+    }
+
     const isAllowed = this.matchRoles(roles, user.roles);
 
     if (!isAllowed) {
@@ -31,7 +35,7 @@ export class RolesGuard implements CanActivate {
     return isAllowed;
   }
 
-  matchRoles = (roles: string[], userRoles: string[]): boolean => {
+  matchRoles = (roles: UserRole[], userRoles: UserRole[]): boolean => {
     return roles.some((role) => userRoles.includes(role));
   };
 }

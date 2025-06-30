@@ -1,25 +1,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import argon from 'argon2';
 
-import { PrismaService } from '~/database';
+import { BaseService } from '~/common/services/base.service';
+import { PrismaService, User } from '~/database';
 
-import { CreateUserDto, UpdateUserDto } from './users.dto';
+import { CreateUserDto, QueryUsersDto, UpdateUserDto } from './users.dto';
 
 @Injectable()
-export class UsersService {
-  constructor(private prisma: PrismaService) {}
+export class UsersService extends BaseService<User> {
+  constructor(private prisma: PrismaService) {
+    super(prisma.user);
+  }
 
   async create(createUserDto: CreateUserDto) {
-    const { email, username } = createUserDto;
+    const { email, phone } = createUserDto;
 
     const existingUser = await this.prisma.user.findFirst({
       where: {
-        OR: [{ email }, { username }],
+        OR: [{ email }, { phone }],
       },
     });
 
     if (existingUser) {
-      throw new NotFoundException('User with this email or username already exists');
+      throw new NotFoundException('Bu email veya telefon numarası zaten kayıtlı');
     }
 
     createUserDto.password = await argon.hash(createUserDto.password);
@@ -39,8 +42,8 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    const users = await this.prisma.user.findMany();
+  async findAll(query: QueryUsersDto) {
+    const users = await this.queryAll(query, ['email', 'phone']);
     return users;
   }
 
@@ -52,7 +55,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return user;

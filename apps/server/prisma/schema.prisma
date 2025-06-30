@@ -14,19 +14,20 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique @default(cuid())
-  email    String @unique
+  id       String  @id @default(uuid())
+  email    String  @unique
+  phone    String? @unique
   password String
 
   profile Profile?
   roles   UserRole[] @default([USER])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   tokens       Token[]
   appointments Appointment[]
+  businesses   BusinessManager[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("users")
 }
@@ -95,8 +96,9 @@ model Business {
   services     Service[]
   appointments Appointment[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  BusinessManager BusinessManager[]
 
   @@map("businesses")
 }
@@ -133,8 +135,24 @@ model Payment {
   @@map("payments")
 }
 
+model BusinessManager {
+  id         String @id @default(uuid())
+  userId     String
+  businessId String
+
+  user     User     @relation(fields: [userId], references: [id])
+  business Business @relation(fields: [businessId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, businessId])
+  @@map("business_managers")
+}
+
 enum UserRole {
   USER
+  MANAGER
   ADMIN
 }
 

@@ -3,12 +3,16 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@n
 import { GetUser } from '~/common/decorators';
 import { AuthGuard } from '~/common/guards';
 
-import { LoginDto, RegisterDto } from './auth.dto';
+import { CreateUserDto, UsersService } from '../users';
+import { LoginDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get('@me')
   @UseGuards(AuthGuard)
@@ -23,7 +27,7 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Body() body: RegisterDto) {
-    return this.authService.register(body);
+  register(@Body() body: CreateUserDto) {
+    return this.usersService.create(body);
   }
 }

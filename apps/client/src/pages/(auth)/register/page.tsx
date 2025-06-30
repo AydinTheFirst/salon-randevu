@@ -26,9 +26,9 @@ export default function Register() {
 
     try {
       await http.post("/auth/register", formData);
-      toast.success("Register successful!");
+      toast.success("Kayıt başarılı!");
       await sleep(1000);
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       handleError(error);
     }
@@ -38,9 +38,9 @@ export default function Register() {
     <div className='center container h-screen'>
       <Card className='w-full max-w-md'>
         <CardHeader className='flex flex-col'>
-          <h1 className='text-2xl font-bold'>Register</h1>
+          <h1 className='text-2xl font-bold'>Kayıt Ol</h1>
           <p className='text-muted'>
-            Please fill in the details to create a new account.
+            Alanları doldurarak yeni bir hesap oluşturun.
           </p>
         </CardHeader>
         <CardBody>
@@ -50,26 +50,26 @@ export default function Register() {
           >
             <Input
               isRequired
-              label='Username'
-              name='username'
+              label='Telefon Numarası'
+              name='phone'
             />
 
             <Input
               isRequired
-              label='Display Name'
+              label='İsim'
               name='displayName'
             />
 
             <Input
               isRequired
-              label='Email'
+              label='E-posta Adresi'
               name='email'
               type='email'
             />
 
             <PasswordInput
               isRequired
-              label='Password'
+              label='Şifre'
               name='password'
             />
 
@@ -77,18 +77,18 @@ export default function Register() {
               color='primary'
               type='submit'
             >
-              Register
+              Kayıt Ol
             </Button>
           </form>
         </CardBody>
         <CardFooter className='flex justify-center'>
           <p className='text-muted text-sm'>
-            Already have an account?{" "}
+            Hesabınız var mı?{" "}
             <Link
               href='/login'
               size='sm'
             >
-              Login
+              Giriş Yap
             </Link>
           </p>
         </CardFooter>

@@ -27,7 +27,7 @@ export default function Login() {
     try {
       const { data } = await http.post("/auth/login", formData);
       localStorage.setItem("token", data.token);
-      toast.success("Login successful!");
+      toast.success("Giriş başarılı!");
       await sleep(1000);
       navigate("/");
     } catch (error) {
@@ -39,10 +39,8 @@ export default function Login() {
     <div className='center container h-screen'>
       <Card className='w-full max-w-md'>
         <CardHeader className='flex flex-col'>
-          <h1 className='text-2xl font-bold'>Login</h1>
-          <p className='text-muted'>
-            Please enter your credentials to continue.
-          </p>
+          <h1 className='text-2xl font-bold'>Giriş Yap</h1>
+          <p className='text-muted'>Lütfen hesabınıza giriş yapın.</p>
         </CardHeader>
         <CardBody>
           <form
@@ -50,22 +48,24 @@ export default function Login() {
             onSubmit={handleSubmit}
           >
             <Input
-              description='Enter your username or email address.'
+              description='E-mail adresinizi veya telefon numaranızı girin.'
               isRequired
-              label='Username'
+              label='Kullanıcı Adı'
               name='username'
             />
+
             <PasswordInput
               isRequired
-              label='Password'
+              label='Şifre'
               name='password'
             />
+
             <div className='flex justify-end'>
               <Link
                 href='/forgot-password'
                 size='sm'
               >
-                Forgot password?
+                Şifremi Unuttum?
               </Link>
             </div>
             <Button
@@ -78,12 +78,12 @@ export default function Login() {
         </CardBody>
         <CardFooter className='flex justify-center'>
           <p className='text-muted text-sm'>
-            Don't have an account?{" "}
+            Hesabınız yok mu?{" "}
             <Link
               href='/register'
               size='sm'
             >
-              Register
+              Kayıt Ol
             </Link>
           </p>
         </CardFooter>
