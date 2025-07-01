@@ -13,7 +13,3 @@
 .bg-content2 {
   @apply bg-gray-100 dark:bg-[#1A1A1A];
 }
-
-.dark {
-  background-color: #101010;
-}

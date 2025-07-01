@@ -64,10 +64,10 @@ model Token {
 model Appointment {
   id String @id @default(uuid())
 
-  appointmentAt DateTime
-  fullName      String
-  phone         String
-  address       String
+  date     DateTime
+  fullName String
+  phone    String
+  address  String
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -88,6 +88,7 @@ model Business {
   id          String       @id @default(uuid())
   name        String
   type        BusinessType
+  city        String
   district    String
   description String?
   address     String

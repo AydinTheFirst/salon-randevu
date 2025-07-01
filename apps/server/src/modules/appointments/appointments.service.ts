@@ -20,8 +20,8 @@ export class AppointmentsService extends BaseService<Appointment> {
     return this.prisma.appointment.create({
       data: {
         address: dto.address,
-        appointmentAt: dto.appointmentAt,
         business: { connect: { id: dto.businessId } },
+        date: dto.date,
         fullName: dto.fullName,
         phone: dto.phone,
         services: dto.services ? { connect: dto.services.map((id) => ({ id })) } : undefined,
@@ -51,7 +51,7 @@ export class AppointmentsService extends BaseService<Appointment> {
 
     const data: any = {
       address: dto.address,
-      appointmentAt: dto.appointmentAt,
+      date: dto.date,
       fullName: dto.fullName,
       phone: dto.phone,
     };

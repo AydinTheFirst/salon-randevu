@@ -1,11 +1,10 @@
 import { Button, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
-import { useLoaderData, useSearchParams } from "react-router";
-
-import type { Paginated, Service } from "~/types";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 
 import DataTable from "~/components/data-table";
 import { http } from "~/lib/http";
+import { type Paginated, type Service } from "~/types";
 
 export const clientLoader = async ({ request }: { request: Request }) => {
   const url = new URL(request.url);
@@ -25,6 +24,7 @@ export const clientLoader = async ({ request }: { request: Request }) => {
 };
 
 export default function Services() {
+  const navigate = useNavigate();
   const { services } = useLoaderData<typeof clientLoader>();
   const [, setSearchParams] = useSearchParams();
 
@@ -45,7 +45,14 @@ export default function Services() {
     <div className='grid gap-5'>
       <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
         <h2 className='text-xl font-semibold'>Hizmetler</h2>
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-2'>
+          <Button
+            onPress={() => navigate("/admin/services/create")}
+            variant='flat'
+          >
+            Yeni Hizmet Ekle
+          </Button>
+
           <Button
             isIconOnly
             variant='light'
@@ -58,6 +65,7 @@ export default function Services() {
       <DataTable
         columns={columns}
         items={items}
+        onRowAction={(key) => navigate(`/admin/services/${key}`)}
       />
 
       <div className='flex justify-end'>

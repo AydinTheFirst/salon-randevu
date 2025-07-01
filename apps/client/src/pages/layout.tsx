@@ -5,6 +5,8 @@ import ToggleTheme from "~/components/toggle-theme";
 
 import AppProviders from "./provider";
 
+export { ErrorBoundary } from "~/components/error-boundary";
+
 export default function Layout() {
   return (
     <AppProviders>

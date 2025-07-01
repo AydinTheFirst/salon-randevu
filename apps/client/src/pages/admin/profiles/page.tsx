@@ -1,6 +1,6 @@
 import { Button, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
-import { useLoaderData, useSearchParams } from "react-router";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 
 import type { Paginated, Profile } from "~/types";
 
@@ -25,6 +25,8 @@ export const clientLoader = async ({ request }: { request: Request }) => {
 };
 
 export default function Profiles() {
+  const navigate = useNavigate();
+
   const { profiles } = useLoaderData<typeof clientLoader>();
   const [, setSearchParams] = useSearchParams();
 
@@ -60,6 +62,7 @@ export default function Profiles() {
       <DataTable
         columns={columns}
         items={items}
+        onRowAction={(key) => navigate(`/admin/profiles/${key}`)}
       />
 
       <div className='flex justify-end'>

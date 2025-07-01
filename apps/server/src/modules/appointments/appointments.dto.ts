@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsArray, IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsISO8601, IsOptional, IsString, IsUUID } from 'class-validator';
 
 import { BaseQueryDto } from '~/common/dto';
 
@@ -7,11 +7,11 @@ export class CreateAppointmentDto {
   @IsString()
   address: string;
 
-  @IsDateString()
-  appointmentAt: string;
-
   @IsUUID()
   businessId: string;
+
+  @IsISO8601()
+  date: string;
 
   @IsString()
   fullName: string;

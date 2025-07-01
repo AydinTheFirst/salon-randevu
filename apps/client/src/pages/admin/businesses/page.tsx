@@ -35,12 +35,14 @@ export default function Businesses() {
   const columns = [
     { key: "name", label: "İşletme Adı" },
     { key: "type", label: "Tür" },
+    { key: "city", label: "İl" },
     { key: "district", label: "İlçe" },
     { key: "phone", label: "Telefon" },
     { key: "createdAt", label: "Oluşturulma" }
   ];
 
   const items = businesses.items.map((biz) => ({
+    city: biz.city,
     createdAt: new Date(biz.createdAt).toLocaleDateString(),
     district: biz.district,
     key: biz.id,
@@ -56,7 +58,15 @@ export default function Businesses() {
           <h2 className='text-xl font-semibold'>İşletmeler</h2>
           <small className='text-muted'></small>
         </div>
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-2'>
+          <Button
+            onPress={() => navigate("/admin/businesses/create")}
+            variant='flat'
+          >
+            <span className='hidden md:inline'>Yeni İşletme Ekle</span>
+            <span className='inline md:hidden'>Ekle</span>
+          </Button>
+
           <Button
             isIconOnly
             variant='light'

@@ -8,6 +8,9 @@ export class CreateBusinessDto {
   @IsString()
   address: string;
 
+  @IsString()
+  city: string;
+
   @IsOptional()
   @IsString()
   description?: string;

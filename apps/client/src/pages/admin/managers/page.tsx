@@ -1,4 +1,4 @@
-import { Button, Pagination } from "@heroui/react";
+import { Button, Link, Pagination } from "@heroui/react";
 import { LucideFilter } from "lucide-react";
 // routes/admin/managers.tsx
 import { useLoaderData, useNavigate, useSearchParams } from "react-router";
@@ -49,7 +49,15 @@ export default function Managers() {
     <div className='grid gap-5'>
       <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
         <h2 className='text-xl font-semibold'>Yöneticiler</h2>
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-2'>
+          <Button
+            as={Link}
+            href='/admin/managers/create'
+            variant='flat'
+          >
+            Ekle
+          </Button>
+
           <Button
             isIconOnly
             variant='light'

@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "react-router serve",
     "dev": "react-router dev",
     "build": "react-router build",
     "preview": "vite preview",
@@ -12,8 +13,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@heroui/react": "2.8.0-beta.6",
+    "@heroui/react": "2.8.0-beta.11",
     "@internationalized/date": "^3.8.2",
+    "@react-aria/i18n": "3.12.10",
     "@react-router/node": "^7.6.3",
     "@react-router/serve": "^7.6.3",
     "@tailwindcss/vite": "^4.1.11",
@@ -29,6 +31,7 @@
     "rr-next-routes": "^0.0.9",
     "sonner": "^2.0.5",
     "swr": "^2.3.3",
+    "ts-luxon": "^6.1.0",
     "vite-tsconfig-paths": "^5.1.4",
     "zustand": "^5.0.6"
   },

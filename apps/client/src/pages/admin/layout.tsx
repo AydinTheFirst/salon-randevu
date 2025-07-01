@@ -1,4 +1,22 @@
-import { Divider, Navbar, NavbarContent } from "@heroui/react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
+  Navbar,
+  NavbarContent
+} from "@heroui/react";
+import {
+  LucideBuilding2,
+  LucideCalendar,
+  LucideDollarSign,
+  LucideIdCard,
+  LucidePaperclip,
+  LucidePieChart,
+  LucideUser2
+} from "lucide-react";
+import React from "react";
+import { useLocation } from "react-router";
 import { Outlet } from "react-router";
 
 import SidebarGroup from "~/components/sidebar/sidebar-group";
@@ -9,46 +27,54 @@ import { useSidebarStore } from "~/store/sidebar-store";
 const SIDEBAR_WIDTH = 280;
 
 const adminMenuItems = [
-  { href: "/admin", label: "Anasayfa" },
-  { href: "/admin/users", label: "Kullanıcılar" },
-  { href: "/admin/profiles", label: "Profiller" },
-  { href: "/admin/businesses", label: "İşletmeler" },
-  { href: "/admin/services", label: "Hizmetler" },
-  { href: "/admin/appointments", label: "Randevular" },
-  { href: "/admin/payments", label: "Ödemeler" },
-  { href: "/admin/managers", label: "Yöneticiler" }
+  { href: "/admin", icon: LucidePieChart, label: "Anasayfa" },
+  { href: "/admin/users", icon: LucideUser2, label: "Kullanıcılar" },
+  { href: "/admin/profiles", icon: LucideIdCard, label: "Profiller" },
+  { href: "/admin/businesses", icon: LucideBuilding2, label: "İşletmeler" },
+  { href: "/admin/services", icon: LucidePaperclip, label: "Hizmetler" },
+  { href: "/admin/appointments", icon: LucideCalendar, label: "Randevular" },
+  { href: "/admin/payments", icon: LucideDollarSign, label: "Ödemeler" },
+  { href: "/admin/managers", icon: LucideUser2, label: "Yöneticiler" }
 ];
 
 export default function Layout() {
   const isSidebarOpen = useSidebarStore((s) => s.isSidebarOpen);
+  const { pathname } = useLocation();
 
   return (
     <div className='flex h-screen overflow-hidden'>
-      <aside
-        className='bg-content2 flex h-full w-full flex-col gap-5 p-3'
+      <Card
+        as={"aside"}
+        className='bg-content2 flex h-full w-full'
         style={{
           marginLeft: isSidebarOpen ? 0 : -SIDEBAR_WIDTH,
           transition: "margin-left 0.3s ease-in-out",
           width: SIDEBAR_WIDTH
         }}
       >
-        <div className='flex items-center justify-between'>
-          <h1 className='text-lg font-semibold'>Yönetim Paneli</h1>
-        </div>
-        <div className='flex-1'>
+        <CardHeader>
+          <div className='flex items-center justify-between'>
+            <h1 className='text-lg font-semibold'>Yönetim Paneli</h1>
+          </div>
+        </CardHeader>
+        <CardBody>
           <SidebarGroup title='Menü'>
-            {adminMenuItems.map(({ href, label }) => (
+            {adminMenuItems.map(({ href, icon, label }) => (
               <SidebarItem
                 href={href}
+                isDisabled={pathname === href}
                 key={href}
+                startContent={React.createElement(icon, {
+                  className: "h-4 w-4"
+                })}
               >
                 {label}
               </SidebarItem>
             ))}
           </SidebarGroup>
-        </div>
-        <div>footer</div>
-      </aside>
+        </CardBody>
+      </Card>
+
       <Divider orientation='vertical' />
       <main className='flex-1 overflow-auto'>
         <Navbar

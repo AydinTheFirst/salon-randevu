@@ -17,16 +17,16 @@ export enum UserRole {
 
 export interface Appointment {
   address: string;
-  appointmentAt: Date;
   business?: Business;
   businessId: string;
-  createdAt: Date;
+  createdAt: string;
+  date: string;
   fullName: string;
   id: string;
   payment?: null | Payment;
   phone: string;
   services?: Service[];
-  updatedAt: Date;
+  updatedAt: string;
   user?: User;
   userId: string;
 }
@@ -35,7 +35,8 @@ export interface Business {
   address: string;
   appointments?: Appointment[];
   BusinessManager?: BusinessManager[];
-  createdAt: Date;
+  city: string;
+  createdAt: string;
   description?: null | string;
   district: string;
   id: string;
@@ -43,15 +44,15 @@ export interface Business {
   phone: string;
   services?: Service[];
   type: BusinessType;
-  updatedAt: Date;
+  updatedAt: string;
 }
 
 export interface BusinessManager {
   business?: Business;
   businessId: string;
-  createdAt: Date;
+  createdAt: string;
   id: string;
-  updatedAt: Date;
+  updatedAt: string;
   user?: User;
   userId: string;
 }
@@ -70,20 +71,20 @@ export interface Payment {
   appointmentId: string;
   cardHolder: string;
   cardLast4: string;
-  createdAt: Date;
+  createdAt: string;
   id: string;
   meta: unknown;
   status: PaymentStatus;
-  updatedAt: Date;
+  updatedAt: string;
 }
 
 export interface Profile {
   avatar?: null | string;
   bio?: null | string;
-  createdAt: Date;
+  createdAt: string;
   displayName: string;
   id: string;
-  updatedAt: Date;
+  updatedAt: string;
   user?: User;
   userId: string;
 }
@@ -92,19 +93,19 @@ export interface Service {
   appointments?: Appointment[];
   business?: Business;
   businessId: string;
-  createdAt: Date;
+  createdAt: string;
   id: string;
   name: string;
   price: number;
-  updatedAt: Date;
+  updatedAt: string;
 }
 
 export interface Token {
-  createdAt: Date;
-  expiresAt: Date;
+  createdAt: string;
+  expiresAt: string;
   id: string;
   token: string;
-  updatedAt: Date;
+  updatedAt: string;
   user?: User;
   userId: string;
 }
@@ -112,7 +113,7 @@ export interface Token {
 export interface User {
   appointments?: Appointment[];
   businesses?: BusinessManager[];
-  createdAt: Date;
+  createdAt: string;
   email: string;
   id: string;
   password: string;
@@ -120,5 +121,5 @@ export interface User {
   profile?: null | Profile;
   roles: UserRole[];
   tokens?: Token[];
-  updatedAt: Date;
+  updatedAt: string;
 }

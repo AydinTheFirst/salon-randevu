@@ -43,7 +43,7 @@ export default function Appointments() {
   ];
 
   const items = appointments.items.map((a) => ({
-    appointmentAt: new Date(a.appointmentAt).toLocaleString(),
+    appointmentAt: new Date(a.date).toLocaleString(),
     "business.name": a.business?.name ?? "-",
     key: a.id,
     phone: a.phone,
@@ -54,7 +54,13 @@ export default function Appointments() {
     <div className='grid gap-5'>
       <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
         <h2 className='text-xl font-semibold'>Randevular</h2>
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-2'>
+          <Button
+            onPress={() => navigate("/admin/appointments/create")}
+            variant='flat'
+          >
+            Yeni Randevu Ekle
+          </Button>
           <Button
             isIconOnly
             variant='light'

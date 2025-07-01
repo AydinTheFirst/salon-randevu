@@ -11,6 +11,7 @@ const AppProviders = composeProviders(
     const navigate = useNavigate();
     return (
       <HeroUIProvider
+        locale='tr-TR'
         navigate={navigate}
         useHref={useHref}
         validationBehavior='native'
