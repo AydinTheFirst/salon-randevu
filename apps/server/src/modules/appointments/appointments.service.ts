@@ -31,7 +31,18 @@ export class AppointmentsService extends BaseService<Appointment> {
   }
 
   async findAll(query: QueryAppointmentsDto) {
-    return await this.queryAll(query, ['fullName', 'phone', 'address']);
+    const { startDate, endDate, ...restQuery } = query;
+    const customWhere: any = {};
+
+    if (startDate) {
+      customWhere.date = { ...(customWhere.date || {}), gte: new Date(startDate) };
+    }
+
+    if (endDate) {
+      customWhere.date = { ...(customWhere.date || {}), lte: new Date(endDate) };
+    }
+
+    return await this.queryAll(restQuery, ['fullName', 'phone', 'address'], customWhere);
   }
 
   async findOne(id: string) {
