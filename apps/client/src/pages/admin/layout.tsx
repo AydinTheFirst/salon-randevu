@@ -54,7 +54,7 @@ export default function Layout() {
       >
         <CardHeader>
           <div className='flex items-center justify-between'>
-            <h1 className='text-lg font-semibold'>Yönetim Paneli</h1>
+            <h1 className='text-lg font-semibold'>Admin Paneli</h1>
           </div>
         </CardHeader>
         <CardBody>

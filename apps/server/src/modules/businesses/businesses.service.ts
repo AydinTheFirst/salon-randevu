@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { BaseService } from '~/common/services/base.service';
-import { Business, PrismaService } from '~/database';
+import { Business, Prisma, PrismaService } from '~/database';
+import { cleanObject } from '~/lib/utils';
 
 import { CreateBusinessDto, QueryBusinessesDto, UpdateBusinessDto } from './businesses.dto';
 
@@ -16,7 +17,33 @@ export class BusinessesService extends BaseService<Business> {
   }
 
   async findAll(query: QueryBusinessesDto) {
-    return this.queryAll(query, ['name']);
+    const { city, district, type, userId, ...baseQuery } = query;
+
+    const customWhere: Prisma.BusinessWhereInput = cleanObject({
+      city,
+      district,
+      type,
+      userId,
+    });
+
+    return this.queryAll(baseQuery, ['name'], customWhere);
+  }
+
+  async findByUserId(query: QueryBusinessesDto, userId: string) {
+    const { city, district, type, ...baseQuery } = query;
+
+    const customWhere: Prisma.BusinessWhereInput = cleanObject({
+      city,
+      district,
+      managers: {
+        some: {
+          userId,
+        },
+      },
+      type,
+    });
+
+    return this.queryAll(baseQuery, ['name'], customWhere);
   }
 
   async findOne(id: string) {

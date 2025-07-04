@@ -3,6 +3,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useHref, useNavigate } from "react-router";
 import { SWRConfig } from "swr";
 
+import { AuthProvider } from "~/context/auth-context";
 import { composeProviders } from "~/lib/compose-providers";
 import { fetcher, handleError } from "~/lib/http";
 
@@ -35,7 +36,8 @@ const AppProviders = composeProviders(
         onError: handleError
       }}
     />
-  )
+  ),
+  (props) => <AuthProvider {...props} />
 );
 
 export default AppProviders;

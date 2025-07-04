@@ -31,11 +31,19 @@ export class CreateBusinessDto {
 export class QueryBusinessesDto extends BaseQueryDto {
   @IsOptional()
   @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsString()
   district?: string;
 
   @IsEnum(BusinessType)
   @IsOptional()
   type?: BusinessType;
+
+  @IsOptional()
+  @IsString()
+  userId?: string;
 }
 
 export class UpdateBusinessDto extends PartialType(CreateBusinessDto) {}

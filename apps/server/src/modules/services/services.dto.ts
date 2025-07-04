@@ -7,6 +7,9 @@ export class CreateServiceDto {
   @IsUUID()
   businessId: string;
 
+  @IsNumber()
+  duration: number;
+
   @IsString()
   name: string;
 

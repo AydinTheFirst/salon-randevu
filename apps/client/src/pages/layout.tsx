@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { type MetaFunction, Outlet } from "react-router";
 import { Toaster } from "sonner";
 
 import ToggleTheme from "~/components/toggle-theme";
@@ -6,6 +6,10 @@ import ToggleTheme from "~/components/toggle-theme";
 import AppProviders from "./provider";
 
 export { ErrorBoundary } from "~/components/error-boundary";
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Salon Randevu" }];
+};
 
 export default function Layout() {
   return (

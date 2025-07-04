@@ -1,7 +1,7 @@
 import { AppointmentsModule } from './appointments/appointments.module';
 import { AuthModule } from './auth';
-import { BusinessManagersModule } from './business-managers/business-managers.module';
 import { BusinessesModule } from './businesses/businesses.module';
+import { ManagersModule } from './managers/managers.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { ServicesModule } from './services/services.module';
@@ -12,7 +12,7 @@ const Modules = {
   AppointmentsModule,
   AuthModule,
   BusinessesModule,
-  BusinessManagersModule,
+  ManagersModule,
   PaymentsModule,
   ProfilesModule,
   ServicesModule,

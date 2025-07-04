@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Service } from '@prisma/client';
+import { Prisma, Service } from '@prisma/client';
 
 import { BaseService } from '~/common/services/base.service';
 import { PrismaService } from '~/database';
+import { cleanObject } from '~/lib/utils';
 
 import { CreateServiceDto, QueryServicesDto, UpdateServiceDto } from './services.dto';
 
@@ -16,14 +17,21 @@ export class ServicesService extends BaseService<Service> {
     return this.prisma.service.create({
       data: {
         business: { connect: { id: dto.businessId } },
+        duration: dto.duration,
         name: dto.name,
         price: dto.price,
       },
     });
   }
 
-  findAll(query: QueryServicesDto) {
-    return this.queryAll(query, ['name']);
+  async findAll(query: QueryServicesDto) {
+    const { businessId, ...baseQuery } = query;
+
+    const customWhere: Prisma.ServiceWhereInput = cleanObject({
+      businessId,
+    });
+
+    return this.queryAll(baseQuery, ['name'], customWhere);
   }
 
   async findOne(id: string): Promise<Service> {
@@ -41,7 +49,8 @@ export class ServicesService extends BaseService<Service> {
   async update(id: string, dto: UpdateServiceDto): Promise<Service> {
     await this.findOne(id);
 
-    const data: any = {
+    const data: Prisma.ServiceUpdateInput = {
+      duration: dto.duration,
       name: dto.name,
       price: dto.price,
     };

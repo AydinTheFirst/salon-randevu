@@ -26,7 +26,10 @@ export default function Login() {
 
     try {
       const { data } = await http.post("/auth/login", formData);
+
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.id);
+
       toast.success("Giriş başarılı!");
       await sleep(1000);
       navigate("/");

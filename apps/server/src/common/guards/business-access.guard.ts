@@ -13,6 +13,10 @@ export class BusinessAccessGuard implements CanActivate {
 
     if (!user || !user.id) throw new ForbiddenException('Not authenticated');
 
+    if (user.roles.includes('ADMIN')) {
+      return true;
+    }
+
     const businessId = this.extractBusinessId(req);
 
     const manager = await this.prisma.businessManager.findFirst({

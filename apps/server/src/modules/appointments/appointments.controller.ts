@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+
+import { GetUser } from '~/common/decorators';
+import { AuthGuard } from '~/common/guards';
 
 import {
   CreateAppointmentDto,
@@ -8,6 +21,7 @@ import {
 import { AppointmentsService } from './appointments.service';
 
 @Controller('appointments')
+@UseGuards(AuthGuard)
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
@@ -17,7 +31,8 @@ export class AppointmentsController {
   }
 
   @Get()
-  findAll(@Query() query: QueryAppointmentsDto) {
+  findAll(@Query() query: QueryAppointmentsDto, @GetUser('id') userId: string) {
+    query.userId = userId;
     return this.appointmentsService.findAll(query);
   }
 

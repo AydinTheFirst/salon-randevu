@@ -94,6 +94,7 @@ export interface Service {
   business?: Business;
   businessId: string;
   createdAt: string;
+  duration: number; // in minutes
   id: string;
   name: string;
   price: number;

@@ -28,6 +28,14 @@ export class CreateAppointmentDto {
   userId: string;
 }
 
-export class QueryAppointmentsDto extends BaseQueryDto {}
+export class QueryAppointmentsDto extends BaseQueryDto {
+  @IsOptional()
+  @IsUUID()
+  businessId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  userId?: string;
+}
 
 export class UpdateAppointmentDto extends PartialType(CreateAppointmentDto) {}

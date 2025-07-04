@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Appointment } from '@prisma/client';
+import { Appointment, Prisma } from '@prisma/client';
 
 import { BaseService } from '~/common/services/base.service';
 import { PrismaService } from '~/database';
@@ -35,7 +35,13 @@ export class AppointmentsService extends BaseService<Appointment> {
   }
 
   async findOne(id: string) {
-    const appointment = await this.prisma.appointment.findUnique({ where: { id } });
+    const appointment = await this.prisma.appointment.findUnique({
+      include: {
+        business: true,
+        user: { select: { email: true, id: true, phone: true, profile: true } },
+      },
+      where: { id },
+    });
     if (!appointment) throw new NotFoundException(`Appointment ${id} not found`);
     return appointment;
   }
@@ -49,7 +55,7 @@ export class AppointmentsService extends BaseService<Appointment> {
   async update(id: string, dto: UpdateAppointmentDto) {
     await this.findOne(id);
 
-    const data: any = {
+    const data: Prisma.AppointmentUpdateInput = {
       address: dto.address,
       date: dto.date,
       fullName: dto.fullName,

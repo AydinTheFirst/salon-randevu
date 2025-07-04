@@ -3,7 +3,7 @@ import { IsOptional, IsUUID } from 'class-validator';
 
 import { BaseQueryDto } from '~/common/dto';
 
-export class CreateBusinessManagerDto {
+export class CreateManagerDto {
   @IsUUID()
   businessId: string;
 
@@ -11,7 +11,7 @@ export class CreateBusinessManagerDto {
   userId: string;
 }
 
-export class QueryBusinessManagersDto extends BaseQueryDto {
+export class QueryManagersDto extends BaseQueryDto {
   @IsOptional()
   @IsUUID()
   businessId?: string;
@@ -21,4 +21,4 @@ export class QueryBusinessManagersDto extends BaseQueryDto {
   userId?: string;
 }
 
-export class UpdateBusinessManagerDto extends PartialType(CreateBusinessManagerDto) {}
+export class UpdateManagerDto extends PartialType(CreateManagerDto) {}
