@@ -1,11 +1,4 @@
-import {
-  Button,
-  Link,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem
-} from "@heroui/react";
+import { Button, Link } from "@heroui/react";
 
 import { useAuth } from "~/hooks/use-auth";
 import { UserRole } from "~/types";
@@ -19,74 +12,7 @@ export default function Page() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100'>
-      {/* Navbar */}
-      <Navbar className='bg-white shadow-md dark:bg-gray-800'>
-        <NavbarBrand>
-          <Link
-            className='text-xl font-bold text-gray-900 dark:text-white'
-            href='/'
-          >
-            Salon Randevu
-          </Link>
-        </NavbarBrand>
-        <NavbarContent justify='end'>
-          {!user ? (
-            <>
-              <NavbarItem>
-                <Button
-                  as={Link}
-                  href='/login'
-                  variant='ghost'
-                >
-                  Giriş Yap
-                </Button>
-              </NavbarItem>
-              <NavbarItem>
-                <Button
-                  as={Link}
-                  color='primary'
-                  href='/register'
-                >
-                  Kayıt Ol
-                </Button>
-              </NavbarItem>
-            </>
-          ) : (
-            <>
-              <NavbarItem>
-                <Button
-                  as={Link}
-                  href='/dashboard'
-                  variant='ghost'
-                >
-                  Panel
-                </Button>
-              </NavbarItem>
-              {user?.roles?.includes(UserRole.ADMIN) && (
-                <NavbarItem>
-                  <Button
-                    as={Link}
-                    href='/admin'
-                    variant='ghost'
-                  >
-                    Admin
-                  </Button>
-                </NavbarItem>
-              )}
-              <NavbarItem>
-                <Button
-                  color='danger'
-                  onPress={handleLogout}
-                >
-                  Çıkış Yap
-                </Button>
-              </NavbarItem>
-            </>
-          )}
-        </NavbarContent>
-      </Navbar>
-
+    <>
       {/* Hero Section */}
       <section
         className='relative flex h-[calc(100vh-64px)] items-center justify-center bg-cover bg-center text-center'
@@ -144,6 +70,15 @@ export default function Page() {
                   </Button>
                 )}
                 <Button
+                  as={Link}
+                  color='primary'
+                  href='/appointment'
+                  size='lg'
+                >
+                  Randevu Al
+                </Button>
+
+                <Button
                   color='danger'
                   onPress={handleLogout}
                   size='lg'
@@ -180,14 +115,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className='bg-gray-200 py-8 text-center text-gray-600 dark:bg-gray-900 dark:text-gray-400'>
-        <p>
-          &copy; {new Date().getFullYear()} Salon Randevu Sistemi. Tüm Hakları
-          Saklıdır.
-        </p>
-      </footer>
-    </div>
+    </>
   );
 }

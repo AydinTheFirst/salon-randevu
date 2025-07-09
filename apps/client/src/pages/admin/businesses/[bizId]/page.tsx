@@ -13,11 +13,9 @@ import {
 import React from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
-import useSWR from "swr";
-
-import type { TRApiResponse } from "~/types/tr";
 
 import ConfirmModal from "~/components/confirm-modal";
+import cities from "~/data/cities.json";
 import { handleError, http } from "~/lib/http";
 import { type Business, BusinessType } from "~/types";
 
@@ -50,10 +48,6 @@ export default function CreateOrEditBiz() {
   );
   const [selectedDistrict, setSelectedDistrict] = React.useState<null | string>(
     business ? business.district : null
-  );
-
-  const { data: cities } = useSWR<TRApiResponse>(
-    "https://turkiyeapi.dev/api/v1/provinces"
   );
 
   const deleleModal = useDisclosure();
@@ -156,7 +150,10 @@ export default function CreateOrEditBiz() {
                 selectedKey={selectedCity}
               >
                 {(item) => (
-                  <AutocompleteItem key={item.name}>
+                  <AutocompleteItem
+                    className='capitalize'
+                    key={item.name}
+                  >
                     {item.name}
                   </AutocompleteItem>
                 )}
@@ -174,8 +171,8 @@ export default function CreateOrEditBiz() {
               >
                 {(item) => (
                   <SelectItem
+                    className='capitalize'
                     key={item.name}
-                    textValue={item.name}
                   >
                     {item.name}
                   </SelectItem>

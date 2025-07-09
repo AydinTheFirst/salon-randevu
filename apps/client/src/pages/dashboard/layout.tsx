@@ -1,11 +1,13 @@
 import {
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
-  Divider,
+  Link,
   Navbar,
   NavbarContent
 } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import {
   LucideBuilding2,
   LucideCalendar,
@@ -18,6 +20,7 @@ import React from "react";
 import { useLocation } from "react-router";
 import { Outlet } from "react-router";
 
+import AcmeLogo from "~/components/logo";
 import SidebarGroup from "~/components/sidebar/sidebar-group";
 import SidebarItem from "~/components/sidebar/sidebar-item";
 import SidebarToggler from "~/components/sidebar/sidebar-toggler";
@@ -46,7 +49,8 @@ export default function Layout() {
     <div className='flex h-screen overflow-hidden'>
       <Card
         as={"aside"}
-        className='bg-content2 flex h-full w-full'
+        className='h-full w-full'
+        radius='none'
         style={{
           marginLeft: isSidebarOpen ? 0 : -SIDEBAR_WIDTH,
           transition: "margin-left 0.3s ease-in-out",
@@ -54,14 +58,13 @@ export default function Layout() {
         }}
       >
         <CardHeader>
-          <div className='flex items-center justify-between'>
-            <h1 className='text-lg font-semibold'>Yönetim Paneli</h1>
-          </div>
+          <AcmeLogo className='h-10 w-10' />
         </CardHeader>
         <CardBody>
           <SidebarGroup title='Menü'>
             {adminMenuItems.map(({ href, icon, label }) => (
               <SidebarItem
+                as={Link}
                 href={href}
                 isDisabled={pathname === href}
                 key={href}
@@ -74,12 +77,15 @@ export default function Layout() {
             ))}
           </SidebarGroup>
         </CardBody>
+        <CardFooter>
+          <SidebarItem startContent={<Icon icon='lucide:log-out' />}>
+            Çıkış Yap
+          </SidebarItem>
+        </CardFooter>
       </Card>
-
-      <Divider orientation='vertical' />
       <main className='flex-1 overflow-auto'>
         <Navbar
-          className='bg-content2'
+          className='shadow'
           maxWidth='full'
         >
           <NavbarContent>

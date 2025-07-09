@@ -47,9 +47,11 @@ export default function CreateOrEditBusinessManager() {
   const { data: users } = useSWR<Paginated<User>>("/users?include=profile");
   const { data: businesses } = useSWR<Paginated<Business>>("/businesses");
 
-  const [selectedUser, setSelectedUser] = React.useState<null | string>(null);
+  const [selectedUser, setSelectedUser] = React.useState<null | string>(
+    manager ? manager.userId : null
+  );
   const [selectedBusiness, setSelectedBusiness] = React.useState<null | string>(
-    null
+    manager ? manager.businessId : null
   );
 
   const [isLoading, setIsLoading] = React.useState(false);

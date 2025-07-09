@@ -24,8 +24,9 @@ export class CreateAppointmentDto {
   @IsUUID('all', { each: true })
   services?: string[];
 
+  @IsOptional()
   @IsUUID()
-  userId: string;
+  userId?: string;
 }
 
 export class QueryAppointmentsDto extends BaseQueryDto {

@@ -9,7 +9,3 @@
 .text-muted {
   @apply text-gray-500 dark:text-gray-400;
 }
-
-.bg-content2 {
-  @apply bg-gray-100 dark:bg-[#1A1A1A];
-}

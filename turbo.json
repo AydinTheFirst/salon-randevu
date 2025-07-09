@@ -2,12 +2,7 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "stream",
   "tasks": {
-    "start": {
-      "dependsOn": ["^start"],
-      "persistent": true,
-      "cache": false,
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
-    },
+    "start": {},
     "build": {
       "dependsOn": ["^build", "db:generate"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
@@ -15,7 +10,8 @@
     "dev": {
       "dependsOn": ["^dev", "db:generate"],
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
     "db:generate": {},
     "db:push": {},

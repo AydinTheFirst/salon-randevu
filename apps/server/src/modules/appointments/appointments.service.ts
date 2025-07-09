@@ -16,22 +16,23 @@ export class AppointmentsService extends BaseService<Appointment> {
     super(prisma.appointment);
   }
 
-  create(dto: CreateAppointmentDto) {
-    return this.prisma.appointment.create({
-      data: {
-        address: dto.address,
-        business: { connect: { id: dto.businessId } },
-        date: dto.date,
-        fullName: dto.fullName,
-        phone: dto.phone,
-        services: dto.services ? { connect: dto.services.map((id) => ({ id })) } : undefined,
-        user: { connect: { id: dto.userId } },
-      },
+  async create(dto: CreateAppointmentDto) {
+    const data: Prisma.AppointmentCreateInput = {
+      ...dto,
+      business: { connect: { id: dto.businessId } },
+      services: dto.services ? { connect: dto.services.map((id) => ({ id })) } : undefined,
+      ...(dto.userId ? { user: { connect: { id: dto.userId } } } : { user: undefined }),
+    };
+
+    const appointment = await this.prisma.appointment.create({
+      data,
     });
+
+    return appointment;
   }
 
   async findAll(query: QueryAppointmentsDto) {
-    return await this.queryAll(query, ['fullName', 'phone', 'address']);
+    return await this.queryAll(query, ['fullName', 'phone']);
   }
 
   async findOne(id: string) {
@@ -56,7 +57,6 @@ export class AppointmentsService extends BaseService<Appointment> {
     await this.findOne(id);
 
     const data: Prisma.AppointmentUpdateInput = {
-      address: dto.address,
       date: dto.date,
       fullName: dto.fullName,
       phone: dto.phone,

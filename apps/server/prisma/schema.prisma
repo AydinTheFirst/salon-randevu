@@ -67,10 +67,9 @@ model Appointment {
   date     DateTime
   fullName String
   phone    String
-  address  String
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
   businessId String
   business   Business @relation(fields: [businessId], references: [id])

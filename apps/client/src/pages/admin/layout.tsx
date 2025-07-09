@@ -3,6 +3,7 @@ import {
   CardBody,
   CardHeader,
   Divider,
+  Link,
   Navbar,
   NavbarContent
 } from "@heroui/react";
@@ -45,7 +46,7 @@ export default function Layout() {
     <div className='flex h-screen overflow-hidden'>
       <Card
         as={"aside"}
-        className='bg-content2 flex h-full w-full'
+        className='flex h-full w-full'
         style={{
           marginLeft: isSidebarOpen ? 0 : -SIDEBAR_WIDTH,
           transition: "margin-left 0.3s ease-in-out",
@@ -61,6 +62,7 @@ export default function Layout() {
           <SidebarGroup title='Menü'>
             {adminMenuItems.map(({ href, icon, label }) => (
               <SidebarItem
+                as={Link}
                 href={href}
                 isDisabled={pathname === href}
                 key={href}
@@ -78,7 +80,7 @@ export default function Layout() {
       <Divider orientation='vertical' />
       <main className='flex-1 overflow-auto'>
         <Navbar
-          className='bg-content2'
+          className=''
           maxWidth='full'
         >
           <NavbarContent>
