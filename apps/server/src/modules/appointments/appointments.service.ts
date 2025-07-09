@@ -17,11 +17,13 @@ export class AppointmentsService extends BaseService<Appointment> {
   }
 
   async create(dto: CreateAppointmentDto) {
+    const { businessId, services, userId, ...appointmentData } = dto;
+
     const data: Prisma.AppointmentCreateInput = {
-      ...dto,
-      business: { connect: { id: dto.businessId } },
-      services: dto.services ? { connect: dto.services.map((id) => ({ id })) } : undefined,
-      ...(dto.userId ? { user: { connect: { id: dto.userId } } } : { user: undefined }),
+      ...appointmentData,
+      business: { connect: { id: businessId } },
+      services: services ? { connect: services.map((id) => ({ id })) } : undefined,
+      user: userId ? { connect: { id: userId } } : undefined,
     };
 
     const appointment = await this.prisma.appointment.create({

@@ -4,9 +4,6 @@ import { IsArray, IsISO8601, IsOptional, IsString, IsUUID } from 'class-validato
 import { BaseQueryDto } from '~/common/dto';
 
 export class CreateAppointmentDto {
-  @IsString()
-  address: string;
-
   @IsUUID()
   businessId: string;
 
