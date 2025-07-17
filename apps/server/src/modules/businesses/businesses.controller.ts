@@ -21,7 +21,6 @@ import { CreateBusinessDto, QueryBusinessesDto, UpdateBusinessDto } from './busi
 import { BusinessesService } from './businesses.service';
 
 @Controller('businesses')
-@Roles(UserRole.ADMIN)
 @UseGuards(AuthGuard, RolesGuard)
 export class BusinessesController {
   constructor(private readonly service: BusinessesService) {}

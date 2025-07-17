@@ -34,7 +34,7 @@ export class AppointmentsService extends BaseService<Appointment> {
   }
 
   async findAll(query: QueryAppointmentsDto) {
-    return await this.queryAll(query, ['fullName', 'phone']);
+    return await this.queryAll(query);
   }
 
   async findOne(id: string) {
@@ -60,8 +60,6 @@ export class AppointmentsService extends BaseService<Appointment> {
 
     const data: Prisma.AppointmentUpdateInput = {
       date: dto.date,
-      fullName: dto.fullName,
-      phone: dto.phone,
     };
 
     if (dto.userId) {
