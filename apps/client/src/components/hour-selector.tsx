@@ -3,8 +3,8 @@ import type React from "react";
 import { Checkbox } from "@heroui/react";
 
 interface HourSelectorProps {
-  selected: number[];
-  setSelected: React.Dispatch<React.SetStateAction<number[]>>;
+  selected: number;
+  setSelected: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function HourSelector({
@@ -12,9 +12,7 @@ export default function HourSelector({
   setSelected
 }: HourSelectorProps) {
   const toggleHour = (hour: number) => {
-    setSelected((prev) =>
-      prev.includes(hour) ? prev.filter((h) => h !== hour) : [...prev, hour]
-    );
+    setSelected((prev) => (prev === hour ? -1 : hour));
   };
 
   function range(start: number, end: number) {
@@ -27,8 +25,8 @@ export default function HourSelector({
     <div className='grid grid-cols-4 gap-2'>
       {hours.map((hour) => (
         <Checkbox
-          checked={selected.includes(hour)}
-          onChange={() => toggleHour(hour)}
+          isSelected={selected === hour}
+          onValueChange={() => toggleHour(hour)}
         >
           {hour.toString().padStart(2, "0")}:00
         </Checkbox>
