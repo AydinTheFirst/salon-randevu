@@ -27,7 +27,7 @@ import {
   Users
 } from "lucide-react";
 import React from "react";
-import { Link, useLoaderData, useNavigate } from "react-router";
+import { Link, redirect, useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { DateTime } from "ts-luxon";
 
@@ -40,6 +40,10 @@ import { handleError, http } from "~/lib/http";
 import type { Route } from "./+types/page";
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
+  if (!localStorage.getItem("token")) {
+    return redirect(`/login?redirect=${window.location.pathname}`);
+  }
+
   const { salonId } = params;
 
   if (!salonId) {

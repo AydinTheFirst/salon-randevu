@@ -21,12 +21,11 @@ import { CreateBusinessDto, QueryBusinessesDto, UpdateBusinessDto } from './busi
 import { BusinessesService } from './businesses.service';
 
 @Controller('businesses')
-@UseGuards(AuthGuard, RolesGuard)
 export class BusinessesController {
   constructor(private readonly service: BusinessesService) {}
 
   @Post()
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard, AdminGuard)
   create(@Body() dto: CreateBusinessDto) {
     return this.service.create(dto);
   }
@@ -38,6 +37,7 @@ export class BusinessesController {
 
   @Get('user')
   @Roles(UserRole.MANAGER)
+  @UseGuards(AuthGuard, RolesGuard)
   findByUserId(@Query() query: QueryBusinessesDto, @GetUser('id') userId: string) {
     return this.service.findByUserId(query, userId);
   }
@@ -48,13 +48,13 @@ export class BusinessesController {
   }
 
   @Delete(':id')
-  @UseGuards(BusinessAccessGuard)
+  @UseGuards(AuthGuard, BusinessAccessGuard)
   remove(@Param('id') id: string) {
     return this.service.remove(id);
   }
 
   @Patch(':id')
-  @UseGuards(BusinessAccessGuard)
+  @UseGuards(AuthGuard, BusinessAccessGuard)
   update(@Param('id') id: string, @Body() dto: UpdateBusinessDto) {
     return this.service.update(id, dto);
   }

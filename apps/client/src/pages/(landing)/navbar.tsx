@@ -154,6 +154,10 @@ export default function Navbar() {
                 className='text-danger'
                 color='danger'
                 key='logout'
+                onPress={() => {
+                  localStorage.removeItem("token");
+                  window.location.href = "/login";
+                }}
                 startContent={<LogIn className='h-4 w-4' />}
               >
                 Çıkış Yap

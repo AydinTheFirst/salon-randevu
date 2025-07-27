@@ -7,7 +7,7 @@ import {
   Input,
   Link
 } from "@heroui/react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 import PasswordInput from "~/components/password-input";
@@ -16,6 +16,7 @@ import { sleep } from "~/lib/utils";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ export default function Login() {
 
       toast.success("Giriş başarılı!");
       await sleep(1000);
-      navigate("/");
+      navigate(searchParams.get("redirect") || "/");
     } catch (error) {
       handleError(error);
     }
