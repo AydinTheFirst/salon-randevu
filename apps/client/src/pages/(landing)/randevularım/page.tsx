@@ -10,7 +10,6 @@ import {
   Link
 } from "@heroui/react";
 import { Calendar, Clock, MapPin, Star } from "lucide-react";
-import React from "react";
 import { toast } from "sonner";
 import useSWR from "swr";
 

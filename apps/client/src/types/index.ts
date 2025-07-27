@@ -1,3 +1,10 @@
+export enum AppointmentStatus {
+  CANCELLED = "CANCELLED",
+  COMPLETED = "COMPLETED",
+  CONFIRMED = "CONFIRMED",
+  PENDING = "PENDING"
+}
+
 export enum BusinessType {
   BARBER = "BARBER",
   SALON = "SALON"
@@ -23,9 +30,11 @@ export interface Appointment {
   date: string;
   fullName: string;
   id: string;
+  notes?: string;
   payment?: null | Payment;
   phone: string;
   services?: Service[];
+  status: AppointmentStatus;
   updatedAt: string;
   user?: User;
   userId: string;

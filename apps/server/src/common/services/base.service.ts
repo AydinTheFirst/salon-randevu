@@ -16,6 +16,32 @@ export class BaseService<T, WhereInput = any> {
     },
   ) {}
 
+  parseIncludeParam(param: string) {
+    const include: any = {};
+
+    for (const path of param.split(',')) {
+      const keys = path.trim().split('.');
+      let current = include;
+
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+
+        if (i === keys.length - 1) {
+          if (typeof current[key] !== 'object') {
+            current[key] = true;
+          }
+        } else {
+          if (!current[key] || current[key] === true) {
+            current[key] = { include: {} };
+          }
+          current = current[key].include;
+        }
+      }
+    }
+
+    return include;
+  }
+
   async queryAll(
     query: QueryParams,
     searchableFields: (keyof T)[] = [],
@@ -87,7 +113,7 @@ export class BaseService<T, WhereInput = any> {
     }
 
     if (include) {
-      prismaQuery.include = Object.fromEntries(include.split(',').map((key) => [key.trim(), true]));
+      prismaQuery.include = this.parseIncludeParam(include);
     }
 
     return prismaQuery;

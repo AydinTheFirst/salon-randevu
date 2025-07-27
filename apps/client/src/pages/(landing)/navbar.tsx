@@ -18,14 +18,16 @@ import { Calendar, Heart, Home, LogIn, Search, User } from "lucide-react";
 import { useState } from "react";
 
 import Logo from "~/components/logo";
+import { useAuth } from "~/hooks/use-auth";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const menuItems = [
     { href: "/", icon: Home, name: "Ana Sayfa" },
     { href: "/salonlar", icon: Search, name: "Salonlar" },
-    { href: "/randevularım", icon: Calendar, name: "Randevularım" },
+    { href: "/appointments", icon: Calendar, name: "Randevularım" },
     { href: "/favoriler", icon: Heart, name: "Favoriler" }
   ];
 
@@ -126,67 +128,78 @@ export default function Navbar() {
         className='items-center'
         justify='end'
       >
-        <Dropdown placement='bottom-end'>
-          <DropdownTrigger>
-            <Button
-              className='bg-gradient-to-r from-blue-600 to-purple-600 text-white transition-all duration-300 hover:from-blue-700 hover:to-purple-700'
-              startContent={<User className='h-4 w-4' />}
-              variant='solid'
+        {user && (
+          <Dropdown placement='bottom-end'>
+            <DropdownTrigger>
+              <Button
+                className='bg-gradient-to-r from-blue-600 to-purple-600 text-white transition-all duration-300 hover:from-blue-700 hover:to-purple-700'
+                startContent={<User className='h-4 w-4' />}
+                variant='solid'
+              >
+                Hesabım
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label='Profile Actions'
+              variant='flat'
             >
-              Hesabım
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            aria-label='Profile Actions'
-            variant='flat'
+              <DropdownItem
+                className='h-14 gap-2'
+                key='profile'
+                startContent={
+                  <Avatar
+                    className='h-8 w-8'
+                    fallback='U'
+                  />
+                }
+              >
+                <p className='font-semibold'>Kullanıcı</p>
+                <p className='text-tiny text-gray-500'>{user.email}</p>
+              </DropdownItem>
+              <DropdownItem
+                as={Link}
+                href='/randevularım'
+                key='appointments'
+                startContent={<Calendar className='h-4 w-4' />}
+              >
+                Randevularım
+              </DropdownItem>
+              <DropdownItem
+                as={Link}
+                href='/favoriler'
+                key='favorites'
+                startContent={<Heart className='h-4 w-4' />}
+              >
+                Favorilerim
+              </DropdownItem>
+              <DropdownItem
+                as={Link}
+                href='/profil'
+                key='settings'
+                startContent={<User className='h-4 w-4' />}
+              >
+                Profil Ayarları
+              </DropdownItem>
+              <DropdownItem
+                className='text-danger'
+                color='danger'
+                key='logout'
+                startContent={<LogIn className='h-4 w-4' />}
+              >
+                Çıkış Yap
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
+        {!user && (
+          <Button
+            as={Link}
+            href='/login'
+            startContent={<LogIn className='h-4 w-4' />}
           >
-            <DropdownItem
-              className='h-14 gap-2'
-              key='profile'
-              startContent={
-                <Avatar
-                  className='h-8 w-8'
-                  fallback='U'
-                />
-              }
-            >
-              <p className='font-semibold'>Kullanıcı</p>
-              <p className='text-tiny text-gray-500'>user@example.com</p>
-            </DropdownItem>
-            <DropdownItem
-              as={Link}
-              href='/randevularım'
-              key='appointments'
-              startContent={<Calendar className='h-4 w-4' />}
-            >
-              Randevularım
-            </DropdownItem>
-            <DropdownItem
-              as={Link}
-              href='/favoriler'
-              key='favorites'
-              startContent={<Heart className='h-4 w-4' />}
-            >
-              Favorilerim
-            </DropdownItem>
-            <DropdownItem
-              as={Link}
-              href='/profil'
-              key='settings'
-              startContent={<User className='h-4 w-4' />}
-            >
-              Profil Ayarları
-            </DropdownItem>
-            <DropdownItem
-              className='text-danger'
-              color='danger'
-              key='logout'
-              startContent={<LogIn className='h-4 w-4' />}
-            >
-              Çıkış Yap
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+            Giriş Yap
+          </Button>
+        )}
       </NavbarContent>
 
       {/* Mobile Menu */}

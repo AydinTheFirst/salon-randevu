@@ -1,7 +1,6 @@
 import { Link } from "@heroui/react";
 import {
   Facebook,
-  Heart,
   Instagram,
   Mail,
   MapPin,
@@ -179,31 +178,28 @@ export default function Footer() {
               <span>Tüm hakları saklıdır.</span>
             </div>
 
-            <div className='flex items-center gap-4 text-sm'>
+            <div className='dark flex items-center gap-4 text-sm'>
               <Link
-                className='text-gray-400 transition-colors duration-300 hover:text-white'
+                color='foreground'
                 href='#'
+                size='sm'
               >
                 Gizlilik Politikası
               </Link>
               <Link
-                className='text-gray-400 transition-colors duration-300 hover:text-white'
+                color='foreground'
                 href='#'
+                size='sm'
               >
                 Kullanım Şartları
               </Link>
               <Link
-                className='text-gray-400 transition-colors duration-300 hover:text-white'
+                color='foreground'
                 href='#'
+                size='sm'
               >
                 Yardım
               </Link>
-            </div>
-
-            <div className='flex items-center gap-1 text-sm text-gray-400'>
-              <span>Made with</span>
-              <Heart className='h-4 w-4 fill-current text-red-400' />
-              <span>in Turkey</span>
             </div>
           </div>
         </div>

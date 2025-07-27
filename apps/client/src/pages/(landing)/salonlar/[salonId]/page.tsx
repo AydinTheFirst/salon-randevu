@@ -11,7 +11,6 @@ import {
   Link
 } from "@heroui/react";
 import { Clock, Heart, MapPin, Phone, Star, Users } from "lucide-react";
-import React from "react";
 import { useLoaderData } from "react-router";
 
 import type { Business, Paginated, Service } from "~/types";

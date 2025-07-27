@@ -9,14 +9,16 @@ import {
   Navbar,
   NavbarContent
 } from "@heroui/react";
-import { Building2, Home, LogOut } from "lucide-react";
-import { Outlet } from "react-router";
+import { Home, LogOut, LucideCalendar, LucideChevronLeft } from "lucide-react";
+import { Outlet, useLoaderData } from "react-router";
 
-import Logo from "~/components/logo";
 import SidebarToggler from "~/components/sidebar/sidebar-toggler";
 import { UserCard } from "~/components/user-card";
 import { useAuth } from "~/hooks/use-auth";
+import { http } from "~/lib/http";
 import { useSidebarStore } from "~/store/sidebar-store";
+
+import type { Route } from "./+types/page";
 
 const SIDEBAR_WIDTH = 280;
 
@@ -29,13 +31,20 @@ const menuItems = [
   },
   {
     badge: null,
-    href: "/dashboard/businesses",
-    icon: Building2,
-    label: "İşletmeler"
+    href: "/manage/{bizId}/appointments",
+    icon: LucideCalendar,
+    label: "Randevular"
   }
 ];
 
+export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
+  const { data: business } = await http.get(`/businesses/${params.bizId}`);
+  return { business };
+};
+
 export default function DashboardLayout() {
+  const { business } = useLoaderData<typeof clientLoader>();
+
   const isOpen = useSidebarStore((state) => state.isSidebarOpen);
   const { user } = useAuth();
 
@@ -50,11 +59,18 @@ export default function DashboardLayout() {
         }}
       >
         <CardHeader className='gap-3 border-b border-gray-100 px-6 py-4'>
-          <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600'>
-            <Logo className='h-6 w-6 text-white' />
-          </div>
+          <Button
+            as={Link}
+            href='/dashboard/businesses'
+            isIconOnly
+            variant='light'
+          >
+            <LucideChevronLeft />
+          </Button>
           <div>
-            <h2 className='text-lg font-semibold text-gray-900'>Admin Panel</h2>
+            <h2 className='text-lg font-semibold text-gray-900'>
+              {business?.name}
+            </h2>
             <p className='text-xs text-gray-500'>Salon Randevu</p>
           </div>
         </CardHeader>
@@ -63,7 +79,7 @@ export default function DashboardLayout() {
             {menuItems.map((item) => (
               <Link
                 className='flex items-center gap-3 rounded-lg p-3 text-gray-700 transition-all hover:bg-gray-50 hover:text-gray-900'
-                href={item.href}
+                href={item.href.replace("{bizId}", business?.id || "")}
                 key={item.href}
               >
                 <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-colors group-hover:bg-gray-200'>

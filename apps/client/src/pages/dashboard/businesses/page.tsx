@@ -1,88 +1,79 @@
-import { Button, Pagination } from "@heroui/react";
-import { LucideFilter } from "lucide-react";
-import { useLoaderData, useNavigate, useSearchParams } from "react-router";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Link,
+  Pagination
+} from "@heroui/react";
+import { LucideMapPin } from "lucide-react";
+import { useLoaderData } from "react-router";
 
 import type { Business, Paginated } from "~/types";
 
-import DataTable from "~/components/data-table";
 import { http } from "~/lib/http";
 
-export const clientLoader = async ({ request }: { request: Request }) => {
+import type { Route } from "./+types/page";
+
+export const clientLoader = async ({ request }: Route.ClientLoaderArgs) => {
   const url = new URL(request.url);
 
   const page = Number(url.searchParams.get("page")) || 1;
   const limit = Number(url.searchParams.get("limit")) || 10;
   const offset = (page - 1) * limit;
+  url.searchParams.set("offset", offset.toString());
 
   const { data: businesses } = await http.get<Paginated<Business>>(
-    "/businesses/user",
+    "/businesses",
     {
-      params: {
-        limit,
-        offset
-      }
+      params: url.searchParams
     }
   );
 
   return { businesses };
 };
 
-export default function Businesses() {
-  const navigate = useNavigate();
+export default function Page() {
   const { businesses } = useLoaderData<typeof clientLoader>();
-  const [, setSearchParams] = useSearchParams();
-
-  const columns = [
-    { key: "name", label: "İşletme Adı" },
-    { key: "type", label: "Tür" },
-    { key: "city", label: "İl" },
-    { key: "district", label: "İlçe" },
-    { key: "phone", label: "Telefon" },
-    { key: "createdAt", label: "Oluşturulma" }
-  ];
-
-  const items = businesses.items.map((biz) => ({
-    city: biz.city,
-    createdAt: new Date(biz.createdAt).toLocaleDateString(),
-    district: biz.district,
-    key: biz.id,
-    name: biz.name,
-    phone: biz.phone,
-    type: biz.type
-  }));
 
   return (
     <div className='grid gap-5'>
-      <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-        <div>
-          <h2 className='text-xl font-semibold'>İşletmeler</h2>
-          <small className='text-muted'></small>
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+        <div className='flex flex-col gap-1'>
+          <h2 className='text-xl font-semibold'>İşletmelerim</h2>
+          <p className='text-muted text-sm'>
+            Sahip olduğunuz işletemeler burada görüntülenir
+          </p>
         </div>
-        <div className='flex justify-end gap-2'>
-          <Button
-            isIconOnly
-            variant='light'
-          >
-            <LucideFilter />
-          </Button>
-        </div>
+        <div className='flex justify-end'></div>
       </div>
-      <DataTable
-        columns={columns}
-        items={items}
-        onRowAction={(row) => navigate(`/dashboard/businesses/${row}`)}
-      />
-      <div className='flex justify-end'>
-        <Pagination
-          onChange={(page) => {
-            setSearchParams((prev) => {
-              prev.set("page", String(page));
-              return prev;
-            });
-          }}
-          page={businesses.meta.page}
-          total={businesses.meta.pageCount}
-        />
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+        {businesses.items.map((business) => (
+          <Card key={business.id}>
+            <CardHeader className='from-primary to-secondary h-32 bg-gradient-to-tr'></CardHeader>
+            <CardBody className='grid gap-3'>
+              <h3 className='font-semibold'>{business.name}</h3>
+              <span className='text-muted text-sm'>
+                <LucideMapPin className='mr-1 inline h-4 w-4' />
+                {business.district} / {business.city}
+              </span>
+              <p className='text-muted text-xs'>{business.description}</p>
+              <Button
+                as={Link}
+                color='primary'
+                fullWidth
+                href={`/manage/${business.id}`}
+              >
+                Yönet
+              </Button>
+            </CardBody>
+          </Card>
+        ))}
+      </div>
+
+      <div className='grid place-items-center'>
+        <Pagination total={businesses.meta.total} />
       </div>
     </div>
   );

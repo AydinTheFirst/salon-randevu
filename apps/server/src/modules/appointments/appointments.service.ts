@@ -3,6 +3,7 @@ import { Appointment, Prisma } from '@prisma/client';
 
 import { BaseService } from '~/common/services/base.service';
 import { PrismaService } from '~/database';
+import { cleanObject } from '~/lib/utils';
 
 import {
   CreateAppointmentDto,
@@ -34,7 +35,14 @@ export class AppointmentsService extends BaseService<Appointment> {
   }
 
   async findAll(query: QueryAppointmentsDto) {
-    return await this.queryAll(query);
+    const { businessId, userId, ...baseQuery } = query;
+
+    const where: Prisma.AppointmentWhereInput = cleanObject({
+      businessId,
+      userId,
+    });
+
+    return await this.queryAll(baseQuery, [], where);
   }
 
   async findOne(id: string) {

@@ -115,7 +115,7 @@ export default function Page() {
                   <Button
                     as={Link}
                     className='h-auto bg-white px-8 py-6 text-lg font-semibold text-purple-600 hover:bg-gray-100'
-                    href='/salonlar'
+                    href='/appointments/new'
                     size='lg'
                     startContent={<Calendar className='h-5 w-5' />}
                   >
