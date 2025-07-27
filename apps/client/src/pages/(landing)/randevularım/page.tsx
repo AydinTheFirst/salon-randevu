@@ -22,7 +22,7 @@ import { type Appointment } from "~/types";
 export default function Page() {
   const { user } = useAuth();
   const { data: appointments, mutate } = useSWR<Paginated<Appointment>>(
-    `/appointments?userId=${user?.id}&include=business,user`
+    user ? `/appointments?userId=${user?.id}&include=business,user` : null
   );
 
   const onCancel = async (appointmentId: string) => {
@@ -34,6 +34,18 @@ export default function Page() {
       handleError(error);
     }
   };
+
+  if (!appointments) {
+    return (
+      <div className='container grid gap-6 py-10'>
+        <Card className='py-16'>
+          <CardBody className='text-center'>
+            <p className='text-gray-500'>Randevular yükleniyor...</p>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className='container grid gap-6 py-10'>

@@ -8,7 +8,7 @@ import AppProviders from "./provider";
 export { ErrorBoundary } from "~/components/error-boundary";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Salon Randevu" }];
+  return [{ title: "Glow Point" }];
 };
 
 export default function Layout() {

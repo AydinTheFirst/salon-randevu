@@ -68,7 +68,7 @@ export default function Page() {
             <div className='mb-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 backdrop-blur-sm'>
               <Sparkles className='h-4 w-4 text-yellow-300' />
               <span className='text-sm font-medium'>
-                Türkiye'nin #1 Salon Randevu Platformu
+                Türkiye'nin #1 Glow Point Platformu
               </span>
             </div>
 
@@ -176,7 +176,7 @@ export default function Page() {
         <div className='container mx-auto px-6'>
           <div className='mb-16 text-center'>
             <h2 className='mb-4 text-4xl font-bold text-gray-900 md:text-5xl'>
-              Neden Salon Randevu?
+              Neden Glow Point?
             </h2>
             <p className='mx-auto max-w-2xl text-xl text-gray-600'>
               Güzellik ve bakım dünyasında yenilikçi çözümlerle hayatınızı

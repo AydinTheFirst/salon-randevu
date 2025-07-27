@@ -55,7 +55,7 @@ export default function DashboardLayout() {
           </div>
           <div>
             <h2 className='text-lg font-semibold text-gray-900'>Admin Panel</h2>
-            <p className='text-xs text-gray-500'>Salon Randevu</p>
+            <p className='text-xs text-gray-500'>Glow Point</p>
           </div>
         </CardHeader>
         <CardBody className='px-6 py-4'>

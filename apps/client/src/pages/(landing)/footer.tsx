@@ -23,7 +23,7 @@ export default function Footer() {
             <div className='mb-4 flex items-center gap-3'>
               <Logo className='h-8 w-8' />
               <span className='bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-xl font-bold text-transparent'>
-                Salon Randevu
+                Glow Point
               </span>
             </div>
             <p className='mb-6 leading-relaxed text-gray-300'>
@@ -174,7 +174,7 @@ export default function Footer() {
         <div className='mt-12 border-t border-white/10 pt-8'>
           <div className='flex flex-col items-center justify-between gap-4 md:flex-row'>
             <div className='flex items-center gap-2 text-sm text-gray-400'>
-              <span>&copy; {currentYear} Salon Randevu Sistemi.</span>
+              <span>&copy; {currentYear} Glow Point Sistemi.</span>
               <span>Tüm hakları saklıdır.</span>
             </div>
 
