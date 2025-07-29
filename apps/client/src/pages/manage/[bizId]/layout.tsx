@@ -15,6 +15,7 @@ import { Outlet, useLoaderData } from "react-router";
 import SidebarToggler from "~/components/sidebar/sidebar-toggler";
 import { UserCard } from "~/components/user-card";
 import { useAuth } from "~/hooks/use-auth";
+import { logout } from "~/lib/auth";
 import { http } from "~/lib/http";
 import { useSidebarStore } from "~/store/sidebar-store";
 
@@ -102,6 +103,7 @@ export default function DashboardLayout() {
         <CardFooter className='border-t border-gray-100 px-6 py-4'>
           <Button
             className='w-full bg-gray-100 text-gray-600 hover:bg-gray-200'
+            onPress={logout}
             size='sm'
             startContent={<LogOut className='h-4 w-4' />}
             variant='flat'

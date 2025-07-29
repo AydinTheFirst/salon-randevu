@@ -25,7 +25,7 @@ const AppProviders = composeProviders(
     <NextThemesProvider
       {...props}
       attribute='class'
-      defaultTheme='light'
+      forcedTheme='light'
     />
   ),
   (props) => (

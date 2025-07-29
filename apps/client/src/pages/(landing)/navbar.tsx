@@ -19,6 +19,7 @@ import { useState } from "react";
 
 import Logo from "~/components/logo";
 import { useAuth } from "~/hooks/use-auth";
+import { logout } from "~/lib/auth";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function Navbar() {
   const menuItems = [
     { href: "/", icon: Home, name: "Ana Sayfa" },
     { href: "/salonlar", icon: Search, name: "Salonlar" },
-    { href: "/appointments", icon: Calendar, name: "Randevularım" },
+    { href: "/randevularım", icon: Calendar, name: "Randevularım" },
     { href: "/favoriler", icon: Heart, name: "Favoriler" }
   ];
 
@@ -202,6 +203,7 @@ export default function Navbar() {
               </Button>
               <Button
                 className='w-full justify-start bg-red-500 text-white'
+                onPress={logout}
                 startContent={<LogIn className='h-4 w-4' />}
                 variant='solid'
               >
