@@ -11,10 +11,11 @@ export default function PasswordInput(props: InputProps) {
     <Button
       isIconOnly
       onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+      radius='full'
       size='sm'
       variant='light'
     >
-      <Icon className='h-5' />
+      <Icon className='text-muted h-5' />
     </Button>
   );
 

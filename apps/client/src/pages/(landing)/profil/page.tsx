@@ -5,92 +5,56 @@ import {
   CardBody,
   CardHeader,
   Chip,
-  Divider,
   Input,
-  Select,
-  SelectItem,
-  Switch,
   Textarea
 } from "@heroui/react";
-import {
-  Bell,
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  MapPin,
-  Phone,
-  Save,
-  Shield,
-  User
-} from "lucide-react";
-import React, { useState } from "react";
+import { Bell, Lock, LucideUser, Save, Shield } from "lucide-react";
+import React from "react";
+import { redirect, useLoaderData, useRevalidator } from "react-router";
 import { toast } from "sonner";
 
-import { useAuth } from "~/hooks/use-auth";
-import { handleError } from "~/lib/http";
+import type { User } from "~/types";
+
+import PasswordInput from "~/components/password-input";
+import { handleError, http } from "~/lib/http";
+
+export const clientLoader = async () => {
+  try {
+    const { data: user } = await http.get<User>("/auth/@me");
+    return { user };
+  } catch {
+    return redirect(`/login?redirect=${encodeURIComponent("/profile")}`);
+  }
+};
 
 export default function ProfileSettingsPage() {
-  const { user } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useLoaderData<typeof clientLoader>();
+  const revalidator = useRevalidator();
 
-  // Form state
-  const [formData, setFormData] = useState({
-    address: "",
-    bio: user?.profile?.bio || "",
-    city: "İstanbul",
-    displayName: user?.profile?.displayName || "",
-    email: user?.email || "",
-    phone: user?.phone || ""
-  });
+  const handleSaveProfile: React.FormEventHandler = async (e) => {
+    e.preventDefault();
 
-  // Notification settings
-  const [notifications, setNotifications] = useState({
-    emailNotifications: true,
-    promotions: false,
-    reminders: true,
-    smsNotifications: true
-  });
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
 
-  // Security settings
-  const [security, setSecurity] = useState({
-    currentPassword: "",
-    newPassword: "",
-    twoFactorAuth: false
-  });
-
-  const handleSaveProfile = async () => {
-    setIsLoading(true);
     try {
-      // TODO : API call to save profile data
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await http.patch("/account/profile", data);
       toast.success("Profil bilgileriniz başarıyla güncellendi! 🎉");
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSaveNotifications = async () => {
-    try {
-      // TODO:    API call to save notification settings
-      toast.success("Bildirim ayarlarınız güncellendi!");
+      revalidator.revalidate();
     } catch (error) {
       handleError(error);
     }
   };
 
-  const handleChangePassword = async () => {
-    if (!security.currentPassword || !security.newPassword) {
-      toast.error("Lütfen tüm alanları doldurun.");
-      return;
-    }
+  const handleChangePassword: React.FormEventHandler = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
+
     try {
-      // TODO: API call to change password
+      await http.patch("/account/password", data);
       toast.success("Şifreniz başarıyla değiştirildi!");
-      setSecurity({ ...security, currentPassword: "", newPassword: "" });
     } catch (error) {
       handleError(error);
     }
@@ -114,7 +78,7 @@ export default function ProfileSettingsPage() {
           <Card className='border-0 bg-white/80 shadow-xl backdrop-blur-sm'>
             <CardHeader className='bg-gradient-to-r from-blue-600 to-purple-600 text-white'>
               <div className='flex items-center gap-3'>
-                <User className='h-6 w-6' />
+                <LucideUser className='h-6 w-6' />
                 <div>
                   <h2 className='text-xl font-bold'>Kişisel Bilgiler</h2>
                   <p className='text-sm text-blue-100'>
@@ -141,6 +105,9 @@ export default function ProfileSettingsPage() {
                   <p className='text-gray-500'>{user?.email}</p>
                   <Button
                     className='mt-2'
+                    onPress={() =>
+                      toast.info("Fotoğraf değiştir özelliği henüz eklenmedi.")
+                    }
                     size='sm'
                     variant='flat'
                   >
@@ -149,87 +116,34 @@ export default function ProfileSettingsPage() {
                 </div>
               </div>
 
-              <div className='grid gap-4 md:grid-cols-2'>
+              <form
+                className='grid gap-4 md:grid-cols-2'
+                onSubmit={handleSaveProfile}
+              >
                 <Input
+                  defaultValue={user?.profile?.displayName || ""}
                   label='Görünen Ad'
-                  onChange={(e) =>
-                    setFormData({ ...formData, displayName: e.target.value })
-                  }
-                  placeholder='Görünen adınızı girin'
-                  startContent={<User className='h-4 w-4 text-gray-400' />}
-                  value={formData.displayName}
+                  name='displayName'
                   variant='bordered'
                 />
-                <Input
-                  label='E-posta'
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder='E-posta adresiniz'
-                  startContent={<Mail className='h-4 w-4 text-gray-400' />}
-                  type='email'
-                  value={formData.email}
-                  variant='bordered'
-                />
-                <Input
-                  label='Telefon'
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  placeholder='Telefon numaranız'
-                  startContent={<Phone className='h-4 w-4 text-gray-400' />}
-                  value={formData.phone}
-                  variant='bordered'
-                />
-                <Select
-                  label='Şehir'
-                  onSelectionChange={(keys) => {
-                    const city = Array.from(keys)[0] as string;
-                    setFormData({ ...formData, city });
-                  }}
-                  placeholder='Şehir seçin'
-                  selectedKeys={[formData.city]}
-                  startContent={<MapPin className='h-4 w-4 text-gray-400' />}
-                  variant='bordered'
-                >
-                  <SelectItem key='İstanbul'>İstanbul</SelectItem>
-                  <SelectItem key='Ankara'>Ankara</SelectItem>
-                  <SelectItem key='İzmir'>İzmir</SelectItem>
-                  <SelectItem key='Bursa'>Bursa</SelectItem>
-                  <SelectItem key='Antalya'>Antalya</SelectItem>
-                </Select>
-                <Textarea
-                  className='md:col-span-2'
-                  label='Biyografi'
-                  onChange={(e) =>
-                    setFormData({ ...formData, bio: e.target.value })
-                  }
-                  placeholder='Kendinizden bahsedin...'
-                  value={formData.bio}
-                  variant='bordered'
-                />
-                <Textarea
-                  className='md:col-span-2'
-                  label='Adres'
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                  placeholder='Adres bilgileriniz'
-                  value={formData.address}
-                  variant='bordered'
-                />
-              </div>
 
-              <div className='mt-6 flex justify-end'>
-                <Button
-                  className='bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                  isLoading={isLoading}
-                  onPress={handleSaveProfile}
-                  startContent={<Save className='h-4 w-4' />}
-                >
-                  Değişiklikleri Kaydet
-                </Button>
-              </div>
+                <Textarea
+                  defaultValue={user?.profile?.bio || ""}
+                  label='Biyografi'
+                  name='bio'
+                  placeholder='Kendinizi tanıtın...'
+                  variant='bordered'
+                />
+                <div className='mt-6 flex justify-end md:col-span-2'>
+                  <Button
+                    className='bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    startContent={<Save className='h-4 w-4' />}
+                    type='submit'
+                  >
+                    Değişiklikleri Kaydet
+                  </Button>
+                </div>
+              </form>
             </CardBody>
           </Card>
 
@@ -247,185 +161,37 @@ export default function ProfileSettingsPage() {
               </div>
             </CardHeader>
             <CardBody className='p-6'>
-              <div className='space-y-4'>
+              <form
+                className='space-y-4'
+                onSubmit={handleChangePassword}
+              >
                 <div className='grid gap-4 md:grid-cols-2'>
-                  <Input
-                    endContent={
-                      <button
-                        className='focus:outline-none'
-                        onClick={() => setShowPassword(!showPassword)}
-                        type='button'
-                      >
-                        {showPassword ? (
-                          <EyeOff className='h-4 w-4 text-gray-400' />
-                        ) : (
-                          <Eye className='h-4 w-4 text-gray-400' />
-                        )}
-                      </button>
-                    }
+                  <PasswordInput
                     label='Mevcut Şifre'
-                    onChange={(e) =>
-                      setSecurity({
-                        ...security,
-                        currentPassword: e.target.value
-                      })
-                    }
+                    name='oldPassword'
                     placeholder='Mevcut şifrenizi girin'
                     startContent={<Lock className='h-4 w-4 text-gray-400' />}
-                    type={showPassword ? "text" : "password"}
-                    value={security.currentPassword}
                     variant='bordered'
                   />
-                  <Input
+                  <PasswordInput
                     label='Yeni Şifre'
-                    onChange={(e) =>
-                      setSecurity({ ...security, newPassword: e.target.value })
-                    }
+                    name='newPassword'
                     placeholder='Yeni şifrenizi girin'
                     startContent={<Lock className='h-4 w-4 text-gray-400' />}
-                    type={showPassword ? "text" : "password"}
-                    value={security.newPassword}
                     variant='bordered'
-                  />
-                </div>
-
-                <Divider />
-
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>
-                      İki Faktörlü Doğrulama
-                    </h3>
-                    <p className='text-sm text-gray-500'>
-                      Hesabınızı ekstra güvenlik katmanı ile koruyun
-                    </p>
-                  </div>
-                  <Switch
-                    isSelected={security.twoFactorAuth}
-                    onValueChange={(value) =>
-                      setSecurity({ ...security, twoFactorAuth: value })
-                    }
                   />
                 </div>
 
                 <div className='flex gap-3'>
                   <Button
                     className='bg-gradient-to-r from-red-500 to-pink-500 text-white'
-                    onPress={handleChangePassword}
                     startContent={<Lock className='h-4 w-4' />}
+                    type='submit'
                   >
                     Şifreyi Değiştir
                   </Button>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* Notification Settings */}
-          <Card className='border-0 bg-white/80 shadow-xl backdrop-blur-sm'>
-            <CardHeader className='bg-gradient-to-r from-green-500 to-emerald-500 text-white'>
-              <div className='flex items-center gap-3'>
-                <Bell className='h-6 w-6' />
-                <div>
-                  <h2 className='text-xl font-bold'>Bildirim Ayarları</h2>
-                  <p className='text-sm text-green-100'>
-                    Hangi bildirimleri almak istediğinizi seçin
-                  </p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardBody className='p-6'>
-              <div className='space-y-6'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>
-                      E-posta Bildirimleri
-                    </h3>
-                    <p className='text-sm text-gray-500'>
-                      Randevu onayları ve hatırlatmalar
-                    </p>
-                  </div>
-                  <Switch
-                    isSelected={notifications.emailNotifications}
-                    onValueChange={(value) =>
-                      setNotifications({
-                        ...notifications,
-                        emailNotifications: value
-                      })
-                    }
-                  />
-                </div>
-
-                <Divider />
-
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>
-                      SMS Bildirimleri
-                    </h3>
-                    <p className='text-sm text-gray-500'>
-                      Önemli güncellemeler için SMS
-                    </p>
-                  </div>
-                  <Switch
-                    isSelected={notifications.smsNotifications}
-                    onValueChange={(value) =>
-                      setNotifications({
-                        ...notifications,
-                        smsNotifications: value
-                      })
-                    }
-                  />
-                </div>
-
-                <Divider />
-
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>
-                      Randevu Hatırlatmaları
-                    </h3>
-                    <p className='text-sm text-gray-500'>
-                      Randevunuzdan önce hatırlatma
-                    </p>
-                  </div>
-                  <Switch
-                    isSelected={notifications.reminders}
-                    onValueChange={(value) =>
-                      setNotifications({ ...notifications, reminders: value })
-                    }
-                  />
-                </div>
-
-                <Divider />
-
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <h3 className='font-semibold text-gray-900'>
-                      Promosyon E-postaları
-                    </h3>
-                    <p className='text-sm text-gray-500'>
-                      İndirimler ve özel teklifler
-                    </p>
-                  </div>
-                  <Switch
-                    isSelected={notifications.promotions}
-                    onValueChange={(value) =>
-                      setNotifications({ ...notifications, promotions: value })
-                    }
-                  />
-                </div>
-
-                <div className='flex justify-end'>
-                  <Button
-                    className='bg-gradient-to-r from-green-500 to-emerald-500 text-white'
-                    onPress={handleSaveNotifications}
-                    startContent={<Bell className='h-4 w-4' />}
-                  >
-                    Bildirim Ayarlarını Kaydet
-                  </Button>
-                </div>
-              </div>
+              </form>
             </CardBody>
           </Card>
 
@@ -433,7 +199,7 @@ export default function ProfileSettingsPage() {
           <Card className='border-0 bg-white/80 shadow-xl backdrop-blur-sm'>
             <CardHeader className='bg-gradient-to-r from-gray-600 to-gray-700 text-white'>
               <div className='flex items-center gap-3'>
-                <User className='h-6 w-6' />
+                <LucideUser className='h-6 w-6' />
                 <div>
                   <h2 className='text-xl font-bold'>Hesap Durumu</h2>
                   <p className='text-sm text-gray-100'>
@@ -446,7 +212,7 @@ export default function ProfileSettingsPage() {
               <div className='grid gap-6 md:grid-cols-3'>
                 <div className='text-center'>
                   <div className='mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100'>
-                    <User className='h-6 w-6 text-blue-600' />
+                    <LucideUser className='h-6 w-6 text-blue-600' />
                   </div>
                   <h3 className='font-semibold text-gray-900'>Hesap Tipi</h3>
                   <Chip

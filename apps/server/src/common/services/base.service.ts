@@ -1,3 +1,5 @@
+type obj = Record<string, unknown>;
+
 interface QueryParams {
   fields?: string;
   include?: string;
@@ -8,16 +10,16 @@ interface QueryParams {
   sort?: string;
 }
 
-export class BaseService<T, WhereInput = any> {
+export class BaseService<T, WhereInput = obj> {
   constructor(
     private readonly prismaModel: {
       count: (args: { where?: WhereInput }) => Promise<number>;
-      findMany: (args: any) => Promise<T[]>;
+      findMany: (args: obj) => Promise<T[]>;
     },
   ) {}
 
   parseIncludeParam(param: string) {
-    const include: any = {};
+    const include: obj = {};
 
     for (const path of param.split(',')) {
       const keys = path.trim().split('.');
@@ -34,6 +36,7 @@ export class BaseService<T, WhereInput = any> {
           if (!current[key] || current[key] === true) {
             current[key] = { include: {} };
           }
+          // @ts-expect-error unknown type
           current = current[key].include;
         }
       }
@@ -90,7 +93,7 @@ export class BaseService<T, WhereInput = any> {
       sort = 'createdAt',
     } = query;
 
-    const prismaQuery: any = {
+    const prismaQuery: obj = {
       orderBy: { [sort]: order },
       skip: Number(offset),
       take: Number(limit),
@@ -116,6 +119,7 @@ export class BaseService<T, WhereInput = any> {
       prismaQuery.include = this.parseIncludeParam(include);
     }
 
+    // @ts-expect-error unknown type
     return prismaQuery;
   }
 }

@@ -1,4 +1,5 @@
 import { PaymentStatus } from '@prisma/client';
+import { JsonValue } from '@prisma/client/runtime/library';
 import { IsEnum, IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
 
 import { BaseQueryDto } from '~/common/dto';
@@ -14,7 +15,7 @@ export class CreatePaymentDto {
   cardLast4: string;
 
   @IsObject()
-  meta: any;
+  meta: JsonValue;
 
   @IsEnum(PaymentStatus)
   @IsOptional()
@@ -35,7 +36,7 @@ export class UpdatePaymentDto {
 
   @IsObject()
   @IsOptional()
-  meta?: any;
+  meta?: JsonValue;
 
   @IsEnum(PaymentStatus)
   @IsOptional()
